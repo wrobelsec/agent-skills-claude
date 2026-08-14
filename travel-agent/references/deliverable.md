@@ -6,6 +6,77 @@ The output is a decision document. Someone should be able to read the first scre
 
 **Complex topics carry a further-reading link beside the summary.** Where a paragraph compresses something intricate — a visa process, EU261 rights, an award programme's restrictions, vaccination requirements, driving and insurance rules — link the authoritative text at that point and label it (*the regulation itself*, *the airline's conditions of carriage*, *the ministry's own page*). Your summary is the orientation; the link is the truth, and some readers will need it.
 
+## The section set
+
+**These sections and this grouping are the default skeleton.** Previously only the rail's mechanics were specified, so the sections themselves were invented fresh each run — and a section nobody names is a section that can quietly fail to exist. Both known failures worked exactly that way: the weather section shipped as a stub and the entry table never appeared at all, and neither was noticed because nothing said they were owed.
+
+`*` marks conditional sections. A conditional section that doesn't apply is **stated as skipped, with the reason** — the rule that already governs tracks K and L applies to their sections too, and for the same reason: a silently omitted section looks identical to one that found nothing.
+
+```
+Decide            Where things stand      headline, settled vs open, assumptions to correct
+                  Booking deadlines       lead-time ordered — the act-this-week list
+                  The open questions      unresolved forks, stated as a choice
+                  When to go            * flexible dates only
+                  Wishlist detours      * only where something on the list is reachable
+
+Itinerary         Day by day              one section per variant where a fork is unresolved
+
+Getting there     Flights
+                  Arrival                 airport → first base, and the first-day consequence
+                  Trains, roads, luggage
+                  Tickets and rights    * multi-carrier or connecting itineraries only
+
+On the ground     Where to stay
+                  Day trips
+                  Eating and drinking
+                  Things to do            experiences, festivals, ticketed events
+
+Practical         Entry
+                  Money on the ground
+                  Health
+                  Weather and daylight
+                  Language              * where the traveller doesn't speak the language
+                  Law, scams and safety
+
+Costs             Budget rollup
+                  Points, passes and discounts
+
+Honesty           Risk register
+                  What isn't verified
+                  Sources
+```
+
+**Group labels describe reader intent, never research structure.** Someone looking for the visa rule does not know it came from track H, and never needs to. Groups left with a single surviving section merge upward. Order within a group runs most-decisive first.
+
+**The rail is the table of contents, so every section that exists appears in it.** The weather section was reachable only by scrolling, which is part of why its thinness went unremarked for so long.
+
+**The risk register sits in Honesty as the complete record — but anything in it that changes a decision gets promoted.** A lead-time item belongs in Booking deadlines; a risk that makes one branch worse belongs in The open questions. The register is where the full list lives, not where the urgent parts hide.
+
+### Where each track lands
+
+Every research track resolves to named sections, and this is stated in the brief at dispatch rather than worked out at synthesis. A track with no destination is a track whose findings get compressed into a paragraph and lost.
+
+| Track | Lands in |
+|---|---|
+| **A** Air | Flights · Arrival (transfer cost and time) |
+| **B** Ground | Trains, roads, luggage |
+| **C** Lodging | Where to stay |
+| **D** Experiences | Things to do · on-sale and ballot dates → **Booking deadlines** |
+| **E** Food | Eating and drinking |
+| **F** Community sentiment | **No section of its own — see below** |
+| **G** Corridor scout | Day trips · Wishlist detours · distances feed **Day by day** |
+| **H** Entry, health, climate | **Four sections** — Entry · Money on the ground · Health · Weather and daylight — plus jet lag → **Day by day** |
+| **I** Points and discounts | Points, passes and discounts · Budget rollup |
+| **J** Law and stability | Law, scams and safety · advisories → **Risk register** |
+| **K** Fare rules and rights | Tickets and rights |
+| **L** Language | Language |
+
+Two need calling out, because they are where findings disappear:
+
+**Track F has no section, which makes it the one that vanishes without trace.** Sentiment is cross-cutting by design: it supplies the worth-it verdicts in Day trips, the consensus reads in Eating and drinking, the overrated calls in Things to do, the block-level reads in Where to stay, and the trap list in Law, scams and safety. Because it owns no heading, nothing looks thin when it contributes nothing. **At synthesis, check each of those five landing points carries a community source** — a day-trip verdict with no sentiment behind it means F failed and the failure was invisible.
+
+**Track H fans out to four sections plus the itinerary**, which is why it is the most under-delivered track in the skill and why both known stubs came from it. One agent's return has to reach five destinations; treating it as "the H section" guarantees three of them thin out.
+
 ## Structure
 
 ### 1. Headline
@@ -43,7 +114,9 @@ If the user said their dates are movable by weeks or open, this section comes *b
 
 ### 6. The matrices
 
-In the order from `matrices.md`: flight options, mode comparison, whole-path, lodging, excursions, food, nearby and day trips, distances and travel times, budget scenarios, points and booking channel, discounts and savings.
+In the order from `matrices.md`: flight options, mode comparison, whole-path, lodging, excursions, food, nearby and day trips, distances and travel times, budget scenarios, points and booking channel, discounts and savings, and climate and daylight.
+
+These do not all live together on the page — they sit in the sections that own them, per the map in *The section set* above. Lodging goes in Where to stay, climate in Weather and daylight, and so on.
 
 Each closes with its one-line recommendation and why.
 
@@ -69,6 +142,8 @@ Four things this needs to actually work, each of which fails silently otherwise:
 - **Verified, failed, and cautioned** each get a visible marker — a short chip reading *Confirmed*, *Fails*, *Unverified*, *Pick*, *Trap*. A row that fails a hard requirement should be legible as failing from a metre away.
 - **`UNVERIFIED` is styled deliberately understated** — small, muted, lowercase. It appears in a great many cells on an honest first draft, and if it shouts, the table reads as broken rather than as candid. It is information, not an error.
 - **Struck-through rejected rows keep their data.** Don't blank the cells; the reader wants to see *what* was rejected and how close it came.
+- **Derived is a third state, and it is not `UNVERIFIED`.** Much of this document's most valuable content is computed rather than observed: all-in prices, realistic travel times, door-to-door totals, per-person normalisations, break-evens, cents-per-point, statistical figures, and every converted currency. A derived figure **carries its method where it appears** — the conversion basis, the percentile, the sample, the adjustment applied. Marking it `UNVERIFIED` throws away good work by calling it a gap; marking it as plain fact overstates it.
+- **A correction to something an earlier version asserted is marked as a correction.** When new research contradicts a published claim, say so visibly rather than editing it away. A reader who already read the page needs to know which belief to drop, and a silent edit makes the document less trustworthy rather than more. The struck-through convention covers rejected rows; this covers rejected *statements*.
 
 **The caption carries the method**, per `matrices.md`: dates, party size, any hard constraint applied as a filter, the source and when it was pulled, and — where cells are empty — one line stating that blanks are marked rather than dropped. Someone landing mid-page should be able to tell what was compared, on what basis, and how much is confirmed, without scrolling up.
 
@@ -80,17 +155,26 @@ For each day: date and weekday, base city, what is planned in the morning / afte
 
 Take every transit time from the **distances and travel-times matrix**, not from a guess — and use its realistic column, not the map's. Never chain three map times and call it an hour.
 
+**Where daylight is short, put the departure-time consequence on the day it affects.** A scenic day trip in a window where the sun sets before roughly 17:00 is a morning departure or a wasted trip, and that belongs on the day rather than only in the weather section. The daylight figures are in matrix 12; the itinerary is where they become actionable.
+
 **Plan arrival day for the state the traveller will actually be in.** Itineraries routinely schedule day one as a normal day and it is not — a red-eye landing at 7am against a 3pm check-in, or an eight-hour eastward shift, is not a day for a timed-entry museum. Use H's jet-lag finding: the shift size, the direction (eastward is consistently harder), and the local arrival hour. Say what day one can realistically hold, note whether early check-in or a day room is available where the arrival is awkward, and leave it soft.
 
 Build in slack. A plan with no gaps is a plan that breaks at 11am on day two. Mark which items are fixed (timed entry, reservations, festival hours) and which float, so the day can absorb a delay without the whole thing collapsing.
 
 Note opening hours and closure days against the actual weekday — Monday closures alone have ruined a large fraction of all itineraries ever written.
 
-### 8. Weather and packing
+### 8. Weather and daylight
 
-Climate normals for the dates: average high and low, rainfall, humidity, daylight hours, sea temperature where it matters. The live forecast **only if the trip is inside forecast range**, clearly labeled as a forecast with the date it was pulled — a 10-day forecast quoted as fact ages badly.
+**Render matrix 12 — both tables.** This section previously carried a prose description and no column spec, and it shipped as three rows of published monthly normals plus a paragraph of hedging. The spec exists now; print it.
 
-Then the packing list, tied to the actual planned activities rather than generic: layers, rain gear, footwear for the real terrain, adapters, sun and altitude.
+The two things that make this section worth reading, neither of which survives in a monthly-normals table:
+
+- **The delta against the published monthly figure.** Trips don't occupy calendar months, and a stay in the back half of one can run several degrees off the number the reader will find everywhere else. Showing both is what corrects their other sources.
+- **Sunset at the first and last day of the stay.** Where it falls before roughly 17:00, **say what that means for the days it affects** — which scenic day trips need a morning departure, and which become half-days if started after lunch. That consequence belongs here *and* on the affected days in the itinerary; a daylight figure nobody acts on is trivia.
+
+The live forecast **only if the trip is inside forecast range**, clearly labeled as a forecast with the date it was pulled — a 10-day forecast quoted as fact ages badly. Beyond forecast range, say so rather than letting climatology read as a prediction.
+
+Then the packing list, tied to the actual planned activities rather than generic: layers, rain gear, footwear for the real terrain, adapters, sun and altitude. Tie each item to the finding that justifies it — "a real jacket, because nights run near freezing one year in ten" is a packing instruction someone follows.
 
 Then **dress codes**, per item on the itinerary that has one — temple and mosque coverage, jacket-required restaurants, onsen tattoo policies, trail footwear requirements, club door policies, formal nights.
 
@@ -108,13 +192,19 @@ Anything with a lead time also appears at the top of the booking checklist, beca
 
 ### 10. Entry requirements
 
-One row per traveller nationality × country, including every country transited — never generalized across passports where the party holds different ones. Which regime applies, what the application involves, cost, **advertised versus actual processing time**, and the **official** application URL with an explicit warning about the paid lookalike sites that shadow every e-visa system.
+**This is a table, and it has already shipped as prose once.** A live report reduced a mandated per-passport table to five bullets with no rows, no apply-by date, and a blanket assumption that the whole party held the same passport. It read as finished, which is exactly the problem: a confident paragraph looks complete whether or not anything was checked. **Of every section here, this is the one where a missing row means someone is refused at check-in.**
+
+Render Track H's table: **one row per traveller nationality × country**, including every country transited, never generalized across passports. Which regime applies, permitted stay, what the application involves, documents, cost, **advertised versus actual processing time**, an apply-by date, and the **official** application URL with an explicit warning about the paid lookalike sites that shadow every e-visa system.
+
+**Every nationality in the party gets its own rows even where they are expected to match.** The table exists so the assumption is tested rather than asserted — if all four travellers do hold the same passport, four identical rows cost nothing and prove it was checked.
 
 Anything requiring an application gets an "apply by" date in the booking checklist. A visa running three weeks against an advertised 72 hours is a flight-booking constraint, not paperwork.
 
 ### 11. Money on the ground
 
 The practical answer to "can I just use my card here?" — one of the most useful half-pages in the document, and one most guides wave through.
+
+**Render Track H's payments table, including its `Source` column** — a live report dropped that column entirely, in a document whose core rule is that every row traces to a source. Prose belongs around the table, not instead of it.
 
 Lead with the **cash verdict** in one line: cash is *essential*, *strongly recommended*, or *optional*, with roughly how much to carry and what for. Then:
 
@@ -185,16 +275,40 @@ Then two lists that make the document's limits visible instead of hidden:
 
 1. Load the `artifact-design` skill **first** — required before writing any artifact page.
 2. Write the HTML to the scratchpad. Keep the source markdown there too, so a revision does not mean re-researching from zero.
-3. Publish with `Artifact`: favicon `✈️`, a stable `<title>` naming the trip, a one-sentence `description`.
-4. Hand back the URL.
+3. **Run the checks below.**
+4. Publish with `Artifact`: favicon `✈️`, a stable `<title>` naming the trip, a one-sentence `description`.
+5. Hand back the URL.
+
+### Check the arithmetic before publishing
+
+**Every derived column gets recomputed and compared, programmatically.** Hand-typed derived cells are where silent errors live, and they are invisible on reading because a wrong number looks exactly like a right one — a published table once carried a converted temperature copied from the row above it, which no amount of proofreading catches. The both-currencies rule alone puts a derived column on **every price in every matrix**, so this is a standing exposure across the whole document rather than an occasional risk.
+
+Recompute: unit conversions, currency conversions, per-person divisions, totals, and every stated delta.
+
+Then check the relations that **must** hold. A violation means a derived cell is wrong, and each of these is cheap to test:
+
+- `per-person-per-night × people × nights = total` — both columns already sit in the lodging matrix, so this one is free
+- individual legs sum to the stated door-to-door time
+- component costs sum to the budget rollup
+- `points + cash surcharge` reconciles with the stated cents-per-point against the cash price
+- arrival is after departure; last departure is after first
+- base fare ≤ all-in price, on every row
+- min ≤ mean ≤ max wherever a range and an average both appear
+
+### Check the structure before publishing
+
+- **Every section in the set has either content or a stated reason it was skipped.** This is the check that would have caught both known failures.
+- **Every `id` has a rail entry and every rail entry resolves.** Two lines of script, and it has already caught a missing anchor.
+- **Every section whose columns are specified prints a table**, not a paragraph — the seven listed in `matrices.md` under *Sections that are tables, not prose* included.
 
 ### Navigation
 
 **This document needs a persistent side rail, and it is not optional.** Eighteen sections is far past the length anyone reads top to bottom. The reader arrives wanting one specific thing — the booking checklist, tomorrow's plan, the entry rules, what the recommendation actually was — and a page that can only be reached by scrolling makes them hunt for it every time. They will come back to this page a dozen times before the trip and almost never to read it in order.
 
 - A **sticky left rail** on desktop, holding every section anchor. It stays put while the content scrolls.
-- **Group the links by what the reader is trying to do**, not by the section numbering above: deciding, the itinerary itself, getting there, on the ground, practicalities, the honest limits. The numbering in this file is a writing order, not a reading order, and the rail should reflect how someone actually arrives at the page.
+- **The groups are specified in *The section set* above** — Decide, Itinerary, Getting there, On the ground, Practical, Costs, Honesty. They describe what the reader is trying to do, not how the research was organised. The numbering in this file is a writing order, not a reading order.
 - **Don't number the rail items.** These sections aren't a sequence — numbering them implies a progression that doesn't exist and invites the reader to think they've missed something.
+- **Every section that exists appears in the rail.** A section reachable only by scrolling is one whose absence or thinness nobody notices.
 - Below roughly 1000px, **hide the rail rather than collapsing it into a hamburger**. On a phone the page is a scroll regardless, and a disclosure menu is more friction than the thing it replaces.
 - Give every section `scroll-margin-top` so an anchor jump doesn't land the heading jammed against the viewport edge.
 - Anchor links need a visible focus state, same as everything else.

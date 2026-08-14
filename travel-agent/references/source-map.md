@@ -52,10 +52,10 @@ For commodity facts — geography, time, weather, currency, holidays — structu
 
 | Need | Endpoint | Notes |
 |---|---|---|
-| **Geocoding, and checking a coordinate is where you claim** | `nominatim.openstreetmap.org/search?q=…&format=json` | Descriptive User-Agent, ~1 req/sec. **Use it to verify every coordinate you emit** — an agent once returned map pins in the wrong prefecture, which one lookup would have caught. |
-| **Daylight** | `api.sunrise-sunset.org/json?lat=…&lng=…&date=…&formatted=0` | **Returns UTC — convert to local.** Fills the sunrise/sunset gap when the usual almanac sites block. |
+| **Geocoding, and checking a coordinate is where you claim** | `nominatim.openstreetmap.org/search?q=…&format=json` | Descriptive User-Agent, ~1 req/sec. **Use it to verify every coordinate you emit** — an agent once returned map pins in the wrong prefecture, which one lookup would have caught. **Check what it snapped to**, not just that it returned: the matched name, the distance from what you asked, and the elevation. The nearest point a dataset holds may not represent the destination. |
+| **Daylight** | `api.sunrise-sunset.org/json?lat=…&lng=…&date=…&formatted=0` | **Returns UTC — convert to local.** Fills the sunrise/sunset gap when the usual almanac sites block. Cheap enough to run for the **first and last day at every base** — daylight shrinking past a threshold is an itinerary constraint, not a weather footnote. |
 | **Public holidays** | `date.nager.at/api/v3/PublicHolidays/{year}/{ISO2}` | Authoritative and instant, versus cross-checking blog calendars. |
-| **Weather and climate** | `api.open-meteo.com/v1/forecast` · historical at `archive-api.open-meteo.com` (to 1940 — derive normals) | **Different hosts.** Use the national met service as the authority and this for machine-readable numbers. |
+| **Weather and climate** | `api.open-meteo.com/v1/forecast` · historical at `archive-api.open-meteo.com` (global, back to 1940) | **Different hosts.** The archive returns **daily series** — fetching those and computing over the actual travel window is the intended use, not a workaround. Every response carries the **grid-cell elevation**: read it, because a valley cell standing in for a highland destination understates the cold by several degrees and nothing flags it. |
 | **FX** | `api.frankfurter.dev/v1/{YYYY-MM-DD}?from=XXX&to=YYY` | ECB reference rates. **Returns the date with the rate**, which is exactly what the money rules require. The old `.app` host 301s. |
 
 Also useful and keyless: **OSRM's demo server** for driving distances, and the **USGS feed** for seismic activity.
@@ -182,10 +182,15 @@ Weight recency heavily and note it. Prices and "is it still good" both decay wit
 
 **The national meteorological service is the authority for anything seasonal, and the brief should name it.** Foliage and blossom timing, monsoon onset, first snow, typhoon frequency — every one of these has an official forecaster, and commercial travel sites republishing their own guesses are directional only. Two tracks in one run returned opposite answers on autumn foliage timing because neither consulted the official source; naming it in the brief prevents that.
 
-- Climate normals: weather service historical pages, WeatherSpark-class climate summaries, Wikipedia climate tables as a cross-check — and `archive-api.open-meteo.com` for the same data in machine-readable form
+**Authority for the claim, records for the number.** Naming the met service is necessary and not sufficient — on a live run it was named, fetched, and still could not be read reliably: three passes over its own statistical tables returned three different dates for one quantity. Split the two jobs:
+
+- **The official body establishes *what* is measured**, how the local phenomenon is defined, and whether what you're seeing is normal. Only it can tell you that, and the definitions routinely separate quantities that look interchangeable in translation — first snowfall, first settled snow and first snow visible on the mountains are three different observations with three different dates, and picking the wrong one silently changes the answer.
+- **The numbers come from machine-readable records**, computed. The authority's summary tables are dense, often script-heavy, and a poor extraction target; treating them as the source of figures is how one value ends up with three readings.
+
+- Climate normals: weather service historical pages, WeatherSpark-class climate summaries, Wikipedia climate tables as a cross-check — and `archive-api.open-meteo.com` for **daily records to compute over**, which beats every published summary because it can be scoped to the actual travel dates
 - Live forecast, only if the trip is inside forecast range, labeled as a forecast with the date pulled
-- Seasonal specifics: monsoon and hurricane windows, wildfire and smoke season, snow closures on passes and trails, daylight hours (a December afternoon in Reykjavík is short), sea temperature, altitude effects
-- timeanddate.com for daylight, holidays, and time zones
+- Seasonal specifics: monsoon and hurricane windows, wildfire and smoke season, snow closures on passes and trails, **daylight hours** (a December afternoon in Reykjavík is short — and so is a late-October one in Sapporo, where sunset falls before 16:30), sea temperature, altitude effects
+- timeanddate.com for daylight, holidays, and time zones — though it blocks automated access frequently enough that the keyless daylight endpoint above is the more reliable route
 
 ## Entry, money, connectivity
 

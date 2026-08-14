@@ -40,6 +40,10 @@ What the per-track brief adds:
 >
 > **Facts you own, and facts you defer on:** [name them, per the *one fact, one owner* rule — including the authoritative source for anything seasonal or forecast-based].
 >
+> **Where your findings land:** [the deliverable sections this track fills, from the map in `deliverable.md`]. A track whose destination is unnamed is a track whose findings get compressed into a paragraph at synthesis.
+>
+> **Statistics are returned as sources, not as numbers.** Where this track needs a figure aggregated over many records — a multi-year normal, a percentile, an event frequency, a break-even across the itinerary — **return where the raw series lives** (endpoint, parameters, coverage) rather than an estimate. You have no shell; the orchestrator computes and publishes the method alongside the result.
+>
 > Then: the track's job, its numbered priorities, and its table spec.
 
 ---
@@ -55,6 +59,8 @@ Find every reasonable way to fly this. Non-stop first, then one-stop; only consi
 Check meta-search **and** the airline direct, and report the delta. Check the low-cost carriers on the route separately — many never appear in meta-search at all.
 
 If dates are flexible, scan the ±window and report what the flexibility is worth in money.
+
+**A fare quoted across a calendar range or a season is not a price.** "Shoulder-season fares run $900–1,400" is a bound spanning dates nobody is flying on, and a holiday or a weekend inside the window can price like peak. Get the number for the **actual dates**, or mark it `UNVERIFIED for dates` and label the range as what it is.
 
 When the origin or destination metro has more than one usable airport, cover each — and for each, get **the cost and time from that airport to the city center or the likely lodging area**: taxi/rideshare fare band, train or bus fare and journey time, distance, whether hotel shuttles serve it. A cheap fare into the far airport regularly loses once a $70, 90-minute transfer is counted.
 
@@ -138,6 +144,8 @@ For genuine like-for-like comparison, price hotels and homeshares on the same al
 - **Verify the pool is actually open for the travel dates.** Seasonal closures, renovations, and "under maintenance" are common and are the single most annoying way for this to go wrong. Check recent reviews, not just the amenity list.
 - Where the best option on every other measure has no pool, say that plainly and price the trade — sometimes a nearby beach, a public lido, or a day pass at another hotel covers it, and that is worth researching rather than assuming.
 
+**A rate quoted across a calendar range is not a price.** A booking engine showing `¥163,800–324,444` for a property is reporting a spread across dates the traveller isn't staying — a 2× range nobody can budget against, and on a live run exactly that cell shipped to the reader with "confirm the actual dates" attached. Price the **actual nights**. Where the engine won't return them, mark it `UNVERIFIED for dates` and present the range explicitly as a bound rather than an estimate.
+
 Compare **direct vs. aggregator** for each and report the delta: rate difference, member rates, breakfast included or not, cancellation terms by channel, and whether the booking earns points and elite recognition at all. Get to the **all-in nightly cost** — resort fees, city and tourist taxes, and parking are excluded from the headline number on nearly every channel.
 
 Check the property's own page and the airport's page for **complimentary shuttles**. They exist more often than they are advertised and can swing a decision by $60/day.
@@ -209,6 +217,10 @@ For the venue link, give its own site or social page and the actual reservation 
 
 The honesty pass. What do people who have actually been there say — including what they say is not worth it?
 
+**This track has no section of its own in the deliverable, which makes it the one that can silently vanish.** Everything else lands somewhere with its own heading; your findings get woven into other sections' verdicts instead. Name that plainly so it doesn't get lost: your output supplies the **worth-it verdicts** in Day trips, the **consensus reads** in Eating and drinking, the **overrated calls** in Things to do, the **block-level reads** in Where to stay, and the **trap list** in Law, scams and safety.
+
+Structure your findings so they can be dropped into those five places — tag each row with which one it serves. A run where this track returns nothing looks identical to a run where it was never dispatched, and on a live run it returned a blog's summary of forum threads in place of the forums and nobody noticed until the post-mortem.
+
 Sweep Reddit hard (city subreddit, the local-resident subreddit which is separate and more honest, r/travel, r/solotravel, and any country-specific sub), TripAdvisor destination forums, FlyerTalk, Rick Steves' forum for Europe, blogs, YouTube itinerary and "what I'd skip" videos, and tier lists.
 
 Report specifically:
@@ -242,6 +254,10 @@ For each pair record distance, the mode they will actually use, the map's time, 
 
 Flag explicitly any pair the plan treats as adjacent but isn't — two sights "both in the old town" can be forty minutes apart uphill, and that is the finding this table exists to produce.
 
+**Where a timing is load-bearing, give the typical case and a realistic worst case**, not one padded number. A single figure hides how bad the bad case is, which is the only thing that matters when missing the time has a real cost — the last departure of the day, a timed entry, a connection. A 40-minute transfer that runs to 70 one time in ten is a different decision from one that never exceeds 45, and both average the same. State the worst case *and* what happens if it lands.
+
+**Carry the daylight constraint into every day-trip verdict.** Agent H is computing sunrise and sunset for the actual dates; where the payoff of a place is scenic — a viewpoint, a ropeway, a lake, a gorge, a canal — a destination is only worth the trip if you arrive in usable light. Where the sun sets before about 17:00, say so in the verdict and give the departure time that makes the day work. A day trip recommended without that is a day trip the reader takes at the wrong hour.
+
 | Place | Why (day trip / layover / wishlist) | Travel time each way | Cost each way (local / pref) | Days needed | Added cost vs. base plan | Routing that makes it work | Visa/transit rules | **How to get there — operator or tour link** | Worth-it verdict + source |
 |---|---|---|---|---|---|---|---|---|---|
 
@@ -264,7 +280,16 @@ For the destination **and every country transited**:
 - **Passport validity rule** (six months beyond entry is common, but the destination's stated rule and the airline's enforced rule often differ — report both), **blank page requirements**, **onward or return ticket requirements** and whether they are actually enforced at check-in, proof of funds, proof of accommodation, and any arrival form or health declaration.
 - **Departure requirements** — exit fees, departure taxes and whether they are in the fare, and overstay penalties.
 
-Return this as a table with one row per traveller nationality × country, so nothing is silently generalized: | Passport | Country | Regime | Permitted stay | Application needed? | Where to apply (official URL) | Documents | Cost | Processing time (advertised / actual) | Apply by | Source |
+**Requirement grids extract badly, and this is the worst place in the skill for that to happen.** Nationality × country tables are exactly the dense-grid shape that returned three contradictory readings of one statistical table on a live run — except here a shifted row means someone is refused boarding or turned back at a border. So:
+
+- **Pull the surrounding rows and their labels**, not just the cell you want, so a shifted column is visible.
+- **Confirm the row's nationality label reads back as the one you asked about** before reporting anything from it.
+- **Never report a requirement without stating which row it came from.**
+- Where two readings disagree, that is a **blocking `UNVERIFIED`**, not a judgement call.
+
+Return this as a table with one row per traveller nationality × country, so nothing is silently generalized. **Every nationality in the party gets its own rows even where you expect them to match** — the whole point of the table is that the assumption gets tested rather than asserted:
+
+| Passport | Country | Regime | Permitted stay | Application needed? | Where to apply (official URL) | Documents | Cost | Processing time (advertised / actual) | Apply by | Source |
 
 **HEALTH — research this properly, it is the section most often waved through.**
 
@@ -317,7 +342,19 @@ Return this as a table with one row per traveller nationality × country, so not
 
 **Dates:** public holidays, school holidays, and closures falling in the window.
 
-**Climate:** normals for these dates — average high and low, rainfall, humidity, daylight hours, sea temperature if relevant, altitude. Plus the live forecast **only if the trip is inside forecast range**, clearly labeled as a forecast with the date pulled; if the trip is beyond forecast range, say so rather than passing climatology off as a forecast. Then turn it into concrete packing guidance tied to the planned activities: layers, rain gear, footwear for the real terrain, adapters, sun and altitude. Include **dress codes** for anything the itinerary might include — temple and mosque coverage rules, jacket-required restaurants, onsen tattoo policies, trail footwear requirements, club door policies.
+**CLIMATE — over the travel window, not the calendar month, and with the shape of the distribution rather than one number.**
+
+A previous run shipped this section as three rows of published monthly normals and a paragraph of hedging, and it was wrong by 2.4–3.2 °C on every city. The monthly figure describes a period the traveller isn't there for. What is needed:
+
+- **Normals aggregated over the exact travel dates**, across a stated multi-year sample — and the **delta against the published monthly figure** wherever it is material. That delta is a finding in its own right: it tells the reader the number they will find on every other site is wrong for their dates.
+- **Distribution, not just averages.** A cold-tail figure (roughly the coldest night in ten years), the extreme recorded in the sample, wet-day frequency, the **median** window total alongside the mean, and the **frequency of single-day extreme events** with what they actually were. The median is what someone plans against; the mean is what a rare event distorts.
+- **Daylight at the first and last day of the stay, for every base**, in local time, with day length and how much it changes across the trip. **This is a scheduling constraint, not trivia** — where the sun sets before 17:00, any day trip with a scenic payoff needs a morning departure, and that consequence belongs in your notes so the itinerary can act on it.
+- **The elevation and matched location of every data point you use.** Gridded datasets snap to the nearest cell they hold, which for a mountain destination is frequently the valley — a live run found a 110 m cell standing in for places at 723–1,040 m. Report what the lookup resolved to and flag it where it doesn't represent the place.
+- **Where the raw series lives** — endpoint, parameters, coverage, resolution. **You do not compute these statistics; the orchestrator does.** Your job is to identify the authoritative sources and the retrievable records, not to eyeball an average from whatever values you saw.
+- **Authority for the claim, records for the number.** Use the national meteorological service to establish what is measured, how the local phenomenon is defined, and whether what you're seeing is normal — its definitions frequently separate quantities that translation collapses. Take the figures from machine-readable records. Where two readings of an official table disagree, **report the disagreement rather than picking one.**
+- The live forecast **only if the trip is inside forecast range**, clearly labeled with the date pulled. Beyond forecast range, say so rather than passing climatology off as a forecast.
+
+Then turn it into concrete packing guidance tied to the planned activities: layers, rain gear, footwear for the real terrain, adapters, sun and altitude. Include **dress codes** for anything the itinerary might include — temple and mosque coverage rules, jacket-required restaurants, onsen tattoo policies, trail footwear requirements, club door policies.
 
 **BEST TIME TO VISIT — only if the trip parameters say dates are flexible by weeks or open.** Build a month-by-month picture: weather, high/shoulder/low season pricing for flights and lodging, crowd levels, what is available only in certain months (festivals, wildlife, blossom or foliage, seasonal passes, roads and trails that open), what shuts seasonally, and **the months locals themselves name as best** — which frequently differ from the tourist high season. End with a dated recommended window and the reason.
 
@@ -442,6 +479,8 @@ For each itinerary say what is owed for a long delay, a cancellation, and a deni
 **4. Baggage on multi-carrier itineraries.** When carriers differ on one ticket, whose allowance applies — the rules vary by alliance and by which carrier issued the ticket, and the answer is frequently not the cheaper carrier's. Check interline baggage agreements, whether bags are through-tagged to the final destination, oversize and sports-equipment handling, and **gate-check risk on regional aircraft**, where a roller bag that fits the mainline cabin will not fit the regional jet.
 
 **5. Airport transit mechanics** for each connection point: which terminals, how to move between them and how long that actually takes (some transfers involve a train or a bus outside security), whether **security must be re-cleared**, whether immigration must be cleared, realistic immigration and security queue times at that airport for that hour, fast-track or priority options and whether the fare or status includes them, and whether the published minimum connection time is realistic or optimistic for that specific pairing.
+
+**Connection risk is a question about the tail, not the average.** Give the typical transfer time **and a realistic worst case**, because a connection is a threshold: the average is irrelevant and the bad case decides everything. Pair each with its consequence — and the consequence is set by the ticket structure you established in part 1, which is why these two findings belong together. A 20-minute overrun on one ticket costs a rebooking; the same overrun on separate tickets costs the entire onward fare. Say which, with the number that would make the connection safe.
 
 **6. Lounge access** at each airport on the routing: what the fare class or the traveller's status opens, what a held card opens (Priority Pass and equivalents), paid day-pass options and prices, arrivals lounges where they exist, opening hours against the actual flight times, and — honestly — whether the lounge at that airport is worth the walk. Some are excellent; many are a crowded room with crisps.
 

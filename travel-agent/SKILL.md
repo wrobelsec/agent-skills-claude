@@ -72,15 +72,19 @@ A short scouting pass, before any research agent is dispatched:
 
 **Keys** go in the `env` block of `~/.claude/settings.json`. That is a plain-text file on disk, the same caveat that governs the traveler profile.
 
-### You make the keyed calls, not the agents
+### You make the keyed calls and the computations, not the agents
 
-**Research agents never hold a credential.** They have no shell and no key, deliberately — a key passed into a subagent prompt lands in the transcript, and there is no reason to put it there. You hold the keys and call on their behalf, in two phases:
+**Research agents never hold a credential.** They have no shell and no key, deliberately — a key passed into a subagent prompt lands in the transcript, and there is no reason to put it there. You hold the keys and call on their behalf, in three phases:
 
 **Before dispatch — pre-fetch what is knowable in advance** and put the *results* into the briefs: fares for the routes in scope, entry requirements for the passport-and-destination pairs, coordinates for the cities and neighbourhoods, holidays, climate normals, the dated FX rate. Carry any caveat with the data rather than stripping it — free-tier flight data that is partly cached answers the structural question but not the exact fare, and an agent that isn't told that will quote it as gospel.
 
 **After return — verify what the agents found.** Anything discovered mid-research can't be pre-fetched, so it gets checked during synthesis: geocode every coordinate, run `business_status` on every venue, confirm opening hours and closure days. This is better than having each agent verify its own work, for two reasons: it applies one consistent standard instead of twelve, and it is the point where a fabricated row actually gets caught — a venue name that won't resolve is the tell.
 
-Brief the agents accordingly: **return names and addresses exactly as the source gives them**, so a lookup can resolve them, and never invent a coordinate or an opening time, because those are the fields that get machine-checked.
+**Alongside both — compute what cannot be looked up.** Some of the most decision-relevant numbers in a plan are not published anywhere in the form the trip needs them: conditions over *these exact dates* rather than the calendar month, the frequency of a disruptive event rather than its average, daylight at the start and end of the stay, a pass break-even against this specific itinerary. These are statistics over bulk records, and **you have a shell where the agents do not.** Fetch the raw series, compute over it, and publish with the method in the caption.
+
+A published summary is a fallback, not the goal. Where the underlying records are reachable, **derive the figure and say how** — it is scoped to the actual question, it carries its own method, and it cannot be mis-extracted from someone else's table. On a live run the published monthly climate normals overstated the trip's temperatures by 2.4–3.2 °C, and the corrected figures came from computing over daily records for the actual travel window; no amount of better searching would have found them, because nobody publishes that number.
+
+Brief the agents accordingly: **return names and addresses exactly as the source gives them**, so a lookup can resolve them, and never invent a coordinate or an opening time, because those are the fields that get machine-checked. And where a track needs a statistic over bulk data, **the brief asks for the location of the raw series** — endpoint, parameters, coverage — rather than for a pre-computed summary. Identifying the source is agent work; the arithmetic is not.
 
 **Record which APIs the user configured and which they declined** in `traveler-profile.md`, so later runs don't re-ask — the same re-confirm-don't-re-interrogate rule that already governs loyalty programs.
 
@@ -124,6 +128,8 @@ When either is skipped, **say so and why**. A silently omitted track looks ident
 
 Spawn in the **background** as `travel-researcher` or `travel-scout` (§4), each with its brief from `references/agent-briefs.md`.
 
+**Every brief names where its findings land** — the deliverable sections that track fills, from the map in `deliverable.md`. State it at dispatch rather than working it out at synthesis: a track with no named destination is a track whose findings get compressed into a paragraph and lost. Two need watching in particular. **F owns no section of its own** — its output feeds verdicts inside five other sections, so nothing looks thin when it returns nothing. **H feeds four sections plus the itinerary**, which is why it is the most under-delivered track here and why both known stub failures came from it.
+
 | | Track |
 |---|---|
 | **A** | **Air.** Google Flights, airline direct sites, flexible-date scans. Non-stop first, then one-stop. **Every fare class priced** — basic economy through business — with what each actually includes. |
@@ -160,9 +166,13 @@ Store the assignment in the profile alongside the model lineup it was chosen aga
 
 ## 5. Synthesis
 
-Build the matrices in `references/matrices.md`. Required set: flight options, mode comparison, whole-path, lodging (hotels and homeshares together), excursions, food, nearby/day-trip, **distances and travel times**, budget scenarios, points & booking-channel, **discounts and savings**, and — when dates are flexible — **best time to visit**.
+Build the matrices in `references/matrices.md`. Required set: flight options, mode comparison, whole-path, lodging (hotels and homeshares together), excursions, food, nearby/day-trip, **distances and travel times**, budget scenarios, points & booking-channel, **discounts and savings**, **climate and daylight**, and — when dates are flexible — **best time to visit**.
+
+Seven further sections — entry, money, health, weather, language, rights, and law — take their columns from the **track briefs** rather than from `matrices.md`, and the same rule governs them: **if an agent returned a table, print a table.** That boundary is where columns have twice been lost, once reducing a mandated per-passport entry table to five prose bullets.
 
 Every matrix ends with a one-line **recommendation and why**. A matrix without a pick is not a decision, it is homework.
+
+**Verify the arithmetic before publishing.** Recompute every derived column — unit and currency conversions, per-person divisions, totals, stated deltas — and check the relations that must hold: per-person × people × nights against the total, legs against door-to-door, components against the budget rollup. This belongs in the same phase as verifying agent-returned venues and coordinates, for the same reason: one consistent check where the document is assembled. The both-currencies rule puts a derived column on every price in the document, so a hand-typed error here is a standing exposure rather than a rare one. The full list is in `deliverable.md` under Publishing.
 
 **Every row ends in a link, and it is the operator's own** — flights, rooms, tables, tours, rentals, tickets. The reader acts from the row, not a bibliography. Where a cell compresses an intricate rule, add a **further-reading link to the authoritative text**: the summary orients, the link is the truth.
 

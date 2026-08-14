@@ -27,6 +27,24 @@ For the wide ones the order below is the order they appear, and it is not cosmet
 Where several tables in one section describe variants of the same thing — city hotels and ryokan, say — **keep the column positions identical and adapt the labels**. "On-site food" becomes "Dinner and breakfast" for a ryokan where meals are the point; "neighbourhood safety" becomes "setting" where there is no neighbourhood. Same skeleton, so a reader who has learned one table can read the next; different words, so each says something true.
 - Where a matrix cell compresses a complex rule into a few words — a fare condition, a compensation regime, a visa route, an insurance term — carry a **further-reading link to the authoritative text** alongside it. The reader should never have to go searching for the rule you summarized.
 
+### Sections that are tables, not prose
+
+The matrices below are not the whole deliverable. Several sections have their column specs in **`agent-briefs.md`** instead — that file governs what the *agent returns*, and nothing was carrying those columns across the synthesis boundary, so they were being compressed into paragraphs and lost.
+
+That is not hypothetical. It has happened twice: the weather section shipped as three rows of monthly normals against a full climate spec, and the **entry section shipped as five prose bullets against a mandated per-passport table** — the one section where a missing row means someone is refused at check-in.
+
+| Section | Column spec lives in |
+|---|---|
+| Entry | `agent-briefs.md` Track H — one row per **traveller nationality × country** |
+| Money on the ground | Track H — the payments table |
+| Health | Track H — sections, with vaccination lead times as rows |
+| Weather and daylight | **Matrix 12 below** |
+| Language | Track L |
+| Tickets and rights | Track K |
+| Law, scams and safety | Track J |
+
+**The rule that governs the eleven matrices governs these too:** the column list is the deliverable's column list, unverified cells are marked rather than dropped, and every row carries its source. **If an agent returned a table for a section, print a table.** Prose belongs around it, not instead of it — a confident paragraph reads as finished, which is exactly why nobody caught either failure above.
+
 ## Contents
 
 1. [Flight options](#1-flight-options)
@@ -40,6 +58,7 @@ Where several tables in one section describe variants of the same thing — city
 9. [Budget scenarios](#9-budget-scenarios)
 10. [Points and booking channel](#10-points-and-booking-channel)
 11. [Best time to visit](#11-best-time-to-visit-flexible-dates-only)
+12. [Climate and daylight](#12-climate-and-daylight)
 
 ---
 
@@ -285,7 +304,7 @@ Build this whenever the user said their dates are flexible by weeks or open. Row
 | Column | Contents |
 |---|---|
 | Window | Month or named season, with the local name if there is one (veranillo, shoulder, monsoon, Golden Week) |
-| Weather | Temperature range, rainfall, humidity, daylight, sea temperature — the numbers, not adjectives |
+| Weather | Temperature range, rainfall, humidity, daylight, sea temperature — the numbers, not adjectives. **Median plus tail frequency, not bare ranges** (see matrix 12), and where a candidate window is a partial month, aggregate over that window rather than letting it inherit the month's figure. Monthly bins blur exactly the distinction this matrix exists to draw |
 | Crowds | High / shoulder / low, and what that means concretely: queue lengths, whether reservations are needed, whether the good places are booked out |
 | Price index | Flight and lodging cost relative to the cheapest month, as a multiple or percentage |
 | Only-then | What is available *only* in this window — festivals, wildlife, blossom or foliage, a pass that runs seasonally, a road or trail that opens |
@@ -297,3 +316,38 @@ Build this whenever the user said their dates are flexible by weeks or open. Row
 Budget scenarios (matrix 9) is the one table with no link column — its rows are cost categories, not bookable things. Every other matrix has one.
 
 Close with a **dated recommended window** and a direct comparison against whatever the user originally proposed: what moving would cost or save, and what it would gain or lose. A better trip found after the flights are booked is not a finding, it is a regret.
+
+## 12. Climate and daylight
+
+**Built on every trip**, unlike matrix 11 which only builds when dates are flexible. That asymmetry is why this matrix exists: a locked-date trip previously had no climate spec at all, and the section shipped as three rows of monthly normals plus a paragraph of hedging.
+
+Two tables. Rows are every base plus any day-trip destination whose conditions differ materially — which in practice means anywhere at a different elevation or on a different coast.
+
+**Table A — Conditions over the window**
+
+| Column | Contents |
+|---|---|
+| Place | Base or day-trip destination |
+| Avg high | Aggregated over the **actual travel dates**, both units |
+| Avg low | As above |
+| Chilly night | The low that occurs roughly one year in ten. **This is what to pack for**, not the average — an average low nobody experiences is a worse guide than a cold night they might |
+| Extreme recorded | Coldest and warmest in the sample, so the true range is visible |
+| vs published monthly normal | The delta, where material. **This column is the finding.** It tells the reader that the figure they will find on every other site is wrong for their dates, and roughly by how much |
+| Data point | What the lookup actually resolved to, **including elevation**, flagged wherever it doesn't represent the place |
+
+**Table B — Rain, daylight and disruption**
+
+| Column | Contents |
+|---|---|
+| Place | As above |
+| Days with rain | Share of days recording measurable precipitation, and as a count out of the actual stay — "42%, about 6 of 15" is usable in a way a percentage alone isn't |
+| Typical total | The **median**. This is the planning number |
+| Mean | Shown alongside, so the gap between them is visible wherever a heavy tail exists. Where the two are close, that itself says the climate is well-behaved |
+| Washout risk | Frequency of a single disruptive day across the sample, and what it was. "3 of 16 years saw a 55–145 mm day, all late-season cyclone remnants" is actionable; an average is not |
+| Sunset, first → last day | Local time at both ends of the stay, with day length. **Where this crosses below roughly 17:00, it is an itinerary constraint** and the recommendation must say so |
+
+**Caption carries the method**, per the general rule: years sampled, the exact window, the dataset, the query date, grid elevations, and the note that derived figures are labelled as derived.
+
+**Recommendation after the table** covers packing — layers versus real cold, what the destination-specific hazard is — and **the departure-time consequence wherever daylight is short**. A scenic day trip that needs a morning start should be named here as well as in the itinerary.
+
+**Label adaptation applies**, as it does for lodging variants: a tropical destination replaces *Chilly night* with humidity and heat index, a monsoon destination replaces *Washout risk* with wet-season onset probability, a high-latitude winter trip promotes daylight to the first table. **Same column positions, adapted labels** — the skeleton is what makes several of these readable side by side.
