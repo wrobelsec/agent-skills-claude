@@ -20,7 +20,7 @@ skills/
         ├── source-map.md              Where to look, what blocks, which APIs to use
         ├── agent-briefs.md            Per-track briefs for the research agents
         ├── matrices.md                Exact column specs for every comparison table
-        ├── deliverable.md             Report structure and publishing rules
+        ├── deliverable.md             Canonical section set, report structure, publishing rules
         └── profile-template.md        Schema for traveler-profile.md
 ```
 
