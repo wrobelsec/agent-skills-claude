@@ -47,6 +47,33 @@ In the order from `matrices.md`: flight options, mode comparison, whole-path, lo
 
 Each closes with its one-line recommendation and why.
 
+**The column list in `matrices.md` is the deliverable's column list. Render every field.** This sounds obvious and it is the easiest rule here to break, because the wide matrices are awkward to lay out and the tempting fix is to keep four or five columns and fold the rest into a "Notes" cell. That **destroys the comparison the matrix exists to make** — the reader can no longer scan one attribute down the list, which is the whole point of a table.
+
+It also makes missing research invisible. A dropped column and a column full of `UNVERIFIED` look identical to the writer and completely different to the reader: one hides that nobody checked, the other says so and tells them where to spend their own five minutes.
+
+**A field with no data still appears, marked `UNVERIFIED`.** Never omit it.
+
+**Let wide tables be wide and scroll horizontally.** Lodging runs past twenty columns and that is fine. Let the page fill the window and resize with it, keep running prose to a readable measure independently — the two do not need the same width — and put every table in its own `overflow-x: auto` container so it scrolls inside itself while the page body never does.
+
+Four things this needs to actually work, each of which fails silently otherwise:
+
+- **`min-width: 0` on any grid or flex ancestor of the table.** Grid and flex children default to `min-width: auto`, which makes them expand to fit a wide table instead of letting its container scroll. This is the single commonest reason an `overflow-x: auto` container doesn't scroll, and it looks like the overflow rule is broken when it isn't.
+- **`table-layout: fixed` with real per-column widths.** Under automatic layout the browser **ignores `max-width` on cells** and sizes them to their content, so long text pushes columns wide and bleeds across its neighbours. Fixed layout is what makes declared widths hold.
+- **Widths sized to what each column actually holds.** A yes/no field and a paragraph of complaint themes should not be the same width. Set narrow columns narrow and prose columns wide, or the table is twice as long to scroll as it needs to be.
+- **`overflow-wrap: break-word` on every cell**, so an unbroken string — a long URL, a station name, a currency range — wraps instead of forcing its column open.
+
+**Pin the item column and the price column**, not just the first one. Those are the two fields every comparison is made against, and losing either while scrolling right makes the rest of the row meaningless. Sticky headers on vertical scroll, too. Column order is specified in `matrices.md` — identity, the normalized comparator, the action link, then the total, then detail — and it matters more here than anywhere, because the reader may never scroll past the fourth column.
+
+**Mark state visibly, and make the quiet states quiet.** A table this wide is scanned, not read, so the eye needs to catch what matters without reading every cell:
+
+- **Verified, failed, and cautioned** each get a visible marker — a short chip reading *Confirmed*, *Fails*, *Unverified*, *Pick*, *Trap*. A row that fails a hard requirement should be legible as failing from a metre away.
+- **`UNVERIFIED` is styled deliberately understated** — small, muted, lowercase. It appears in a great many cells on an honest first draft, and if it shouts, the table reads as broken rather than as candid. It is information, not an error.
+- **Struck-through rejected rows keep their data.** Don't blank the cells; the reader wants to see *what* was rejected and how close it came.
+
+**The caption carries the method**, per `matrices.md`: dates, party size, any hard constraint applied as a filter, the source and when it was pulled, and — where cells are empty — one line stating that blanks are marked rather than dropped. Someone landing mid-page should be able to tell what was compared, on what basis, and how much is confirmed, without scrolling up.
+
+**The recommendation goes immediately after the table, not inside it.** One or two sentences: the pick, the reason, and what would change it. A recommendation hidden in a cell is a recommendation nobody reads, and it competes with the data around it.
+
 ### 7. Day-by-day itinerary
 
 For each day: date and weekday, base city, what is planned in the morning / afternoon / evening, where meals are, and the transit between each with **realistic times** — including the walk to the station, the wait, and the fact that a museum takes longer than its listed duration.
@@ -186,3 +213,7 @@ Where the trip has a genuine either/or in it — two candidate routings, two ver
 ## Tone
 
 Set in [research-rules.md](research-rules.md) under *Reporting findings* — write like an agent who will hear about it if the recommendation is wrong. One thing specific to the finished page: **flag the traps as visibly as the picks.** The fare that is cheap until the bag is added, the hotel that is cheap until the taxi is added, the award that is free until the surcharge is added. In a table those rows look like winners, and someone will choose one unless you mark it.
+
+**Show rejected options struck through, not deleted.** When later research invalidates something the page previously recommended, leave the row visible with a line through it and one line on why it failed. Silently removing it means the reader finds it again on their own — it's still the top result on every booking site — and has no idea it was already considered and ruled out. This matters most for the options that *look* best: the cheapest row in a table is the one someone will rediscover, so it is the one that most needs a visible reason for its absence.
+
+The same applies to corrections. When a finding is withdrawn rather than adjusted — because the number was answering the wrong question, not merely wrong — **say that plainly rather than quietly restating it.** A reader who saw the earlier version needs to know it's gone, not wonder whether they misread it.

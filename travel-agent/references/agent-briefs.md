@@ -26,38 +26,29 @@ Twelve tracks, A through L. The model per track is in the heading and in SKILL.m
 
 ## Shared preamble
 
-> You are researching one track of a travel plan. Another agent is synthesizing your findings alongside the other tracks, so **return raw sourced findings, not a polished narrative** — a markdown table plus a notes block. Do not write an itinerary or a recommendation letter.
+Agents are dispatched as **`travel-researcher`** or **`travel-scout`** (SKILL.md §4), and those definitions already carry the standing rules — live-fetch-only, the link rules that prevent fabrication, the blocked-source ladder, the API-first list, budget triage, `UNVERIFIED`, both currencies, and the return format. **Do not restate them here.** They were re-pasted into every dispatch on an earlier run, which meant they were only as reliable as remembering to include them — and the one dispatch that shipped without them is the one that fabricated its sources.
+
+What the per-track brief adds:
+
+> **Trip parameters:** [origin] · [destination(s)] · [dates and flexibility] · [party size and **sleeping arrangements**] · [budget band] · [pace and interests] · [constraints] · [passport nationality per traveller] · [preferred currency] · [today's date]
 >
-> **Trip parameters:** [origin] · [destination(s)] · [dates and flexibility] · [party size and ages] · [budget band] · [pace and interests] · [constraints] · [passport nationality per traveller] · [preferred currency]
+> **Search budget:** [N] `WebSearch` calls. The numbered priorities below are ranked deliberately — spend top-down and report partial rather than covering everything shallowly.
 >
-> **Before you start, read two files in the `travel-agent` skill directory:**
+> **APIs available this run:** [resolved list from the discovery step — endpoint, auth shape, live rate limit]. Where a key is absent, fall back to normal research and note that you did.
 >
-> - `references/research-rules.md` — the standard your findings will be held to. Non-negotiable.
-> - `references/source-map.md` — your source starting points. Read the section for your track, cover every class of source listed, and find the local equivalents it misses.
+> **Read before starting:** `references/research-rules.md` (the standard your findings are held to) and the section of `references/source-map.md` for your track — cover every class of source listed and find the local equivalents it misses.
 >
-> **The rules that decide whether your work is usable:**
+> **Facts you own, and facts you defer on:** [name them, per the *one fact, one owner* rule — including the authoritative source for anything seasonal or forecast-based].
 >
-> 1. Load your tools first: `ToolSearch(query: "select:WebSearch,WebFetch", max_results: 5)`. If a site blocks a plain fetch, fall back to the in-app browser (`mcp__Claude_Browser__preview_start` with the url, then `get_page_text`).
-> 2. **Everything comes from a live fetch you performed just now.** Never state a price, schedule, hour, or availability from memory. Every row carries a source URL and today's date.
-> 3. Anything you could not verify live is labeled `UNVERIFIED` with a note on what you tried. A gap is more useful than an invention. Never invent flight numbers, addresses, phone numbers, prices, or — in the health, entry and legal tracks — rules.
-> 4. Prices in **local currency and [preferred currency]** both, all-in rather than headline, with the FX rate and where you got it.
-> 5. Check the **operator's own site** alongside any aggregator, and report the difference.
-> 6. Check everything against **the actual travel dates and weekdays** — holidays, closures, seasonal schedules, festivals.
-> 7. Where sources disagree, report both and say which is more current or more authoritative. Disagreement is a finding, not a problem to smooth over.
-> 8. Date your community sources. A 2019 consensus is not current.
-> 9. Search in the local language where it will help, and translate.
-> 10. **Return two kinds of link, and don't confuse them.** The *source* is where you learned something. The **action link** is where the reader books the room, reserves the table, buys the ticket, or reads the actual rule — and it belongs in the row itself, not only in your sources list. Prefer the operator's own URL over an aggregator's; it survives longer and carries the real terms. Where no official page exists, say so rather than linking something that merely looks official.
-> 11. **For anything intricate you compress into a phrase** — a fare condition, a visa route, a compensation rule, a programme restriction — also give the **authoritative link** so the synthesis can put it beside the summary. Your one-line version is orientation; the reader may need the source text.
->
-> **If you run low on budget, report what you have rather than nothing** — say what you covered, what you did not reach, and what you would check next.
->
-> Return: the table specified below, then a `## Notes` block for anything that does not fit a cell (caveats, contradictions, timing traps, things that surprised you), then a `## Sources` list of every URL with what it gave you.
+> Then: the track's job, its numbered priorities, and its table spec.
 
 ---
 
 ## A — Air (model: `sonnet`)
 
 Find every reasonable way to fly this. Non-stop first, then one-stop; only consider two-stop if non-stop and one-stop are absent or absurd.
+
+**Check the user's stated arrival city against their first actual base, and price both if they differ.** People describe a trip by the city they think of as the gateway, not necessarily the one they sleep in first. On a live run the traveller said "arriving in Tokyo" while their first base was Osaka — pricing the direct-to-Osaka structure alongside it found a routing that was cheaper, an hour faster, *and* on a single ticket rather than a flight plus an unprotected rail leg. Same logic applies to the return: the city they fly home from may not be the last one they stay in.
 
 **Price every fare class, not just the cheapest.** Basic economy, standard economy, premium economy, business, and first where it exists. Basic economy is routinely a false floor — once a bag and a seat assignment are added back it can lose to standard, and that only shows when they sit side by side. On some routes business is a much smaller premium than expected. For each class record what the fare actually includes: carry-on and checked allowance, seat selection, changes and cancellation, upgrade eligibility, points earning rate, lounge access, and lie-flat vs. angled vs. recliner on the long leg.
 
@@ -93,6 +84,24 @@ Plus a second table for luggage services: | Service | Route covered | Price | Dr
 
 Find 6–10 genuinely different options across the budget band, spread across the neighborhoods that make sense for this trip.
 
+**BEDS FIRST — before price, before amenities, before anything.** This decides the entire lodging budget and it is the easiest thing in the whole skill to get wrong.
+
+**Room count is not bed count, and the words for the difference are local.** Before pricing anything, look up how room types are named in the destination's own market and language, and **record that mapping in your notes** so the synthesis can check your work against it. Every market distinguishes "one bed for two people" from "two beds in one room", and that distinction is routinely invisible in an English-language listing — it lives in the local-language listing or the operator's own room spec.
+
+Then, for **every** row:
+
+- **State the explicit bed configuration** — "2 rooms × 2 single beds = 4", "1 room, 4 separate futons", "2BR: 2 singles + 2 singles". Never write "sleeps 4" and leave it there.
+- **Where the party does not share beds, a room type that reaches its headcount only by sharing FAILS** — mark it as failing and show it struck through rather than silently pricing it. The synthesis needs to see what was rejected and why, or it will rediscover the option later and wonder where it went.
+- **If the bed count cannot be confirmed from the listing, mark `BED CONFIG UNVERIFIED`** and do not present it as satisfying the requirement.
+- **Prefer the domestic booking platform** for this specifically. Local platforms state bed configuration precisely because their own customers need it; international aggregators flatten it into an occupancy number.
+
+Two traps, both market-independent, both observed live:
+
+- **One property may sell two rooms under the same name with different bed layouts** — and the failing one is often slightly cheaper, so sorting by price surfaces it first. Read the bed line, not the room name.
+- **The cheapest-looking option in any list is disproportionately likely to be one that only works by sharing.** When a per-person rate looks unusually good, check the beds before believing it. On a live run the headline "best value" pick turned out to be one twin, one double and two floor mattresses — it looked 40% cheaper than everything else precisely because it wasn't comparable.
+
+**Also report what the constraint costs**: the corrected total against what the naive same-room-count booking would have been. That number is genuinely useful and nobody computes it by default.
+
 **Cover hotels AND homeshares — both, every time.** Search Airbnb, Vrbo, Booking.com's apartment inventory, and the platforms that matter locally (Vacasa, Plum Guide, Sonder, Kid & Coe, and the regional players — in much of Europe and Asia the site locals actually use is not one of the American ones; find it). For a party of 3+, a stay over a few nights, or anywhere with a kitchen requirement, a whole-home rental frequently wins on both price and space — and just as frequently loses once the fees land. Price both and let the matrix show it.
 
 Homeshares have failure modes hotels do not, and each needs checking rather than assuming:
@@ -118,7 +127,10 @@ For genuine like-for-like comparison, price hotels and homeshares on the same al
 - **Breakfast** — included or paid, what kind, and the hours (a breakfast that starts at 8am is useless before a 7am departure).
 - **Luggage hold** before check-in and after checkout — small, and it repeatedly decides how a first and last day can be used.
 - **Accessibility** — step-free entry, roll-in shower, lift access, where relevant to the party.
-- Plus: gym, on-site restaurant and bar, room service and its hours, in-room fridge, safe, bath versus shower only, balcony, spa or sauna, beach access, pet policy, and soundproofing where reviews mention it.
+- **Gym** — hours (24-hour, closes at 22:00, or the near-useless 06:00–09:00 variety), whether it costs extra, and **what is actually in it**. "Fitness centre" describes both a real gym and one treadmill in a converted storeroom; only photos or recent reviews distinguish them.
+- **Spa, sauna and baths** — the most under-weighted amenity in lodging research and a real quality-of-life item on a long or cold trip. Type (spa, sauna, thermal or hot-spring bath, hammam, plunge pool), **free to guests or charged** — a per-visit fee is common even where the property advertises it prominently — hours, gender-separated or mixed, and **any rule that would exclude a member of this party** (tattoo policies, swimwear requirements, age limits). Where the destination has a bathing culture, flag properties offering a proper bath at ordinary business-hotel prices; that combination beats a plainer room at the same rate.
+- **On-site food and drink** — restaurant, bar, café, room service **and its hours**, plus an honest verdict on whether any of it is worth eating in. Decisive in exactly two situations: a **late arrival** with nothing open outside, and a **neighborhood that dies at night**. Get the last order time — a hotel restaurant closing at 20:00 is not a fallback.
+- Plus: in-room fridge, safe, bath versus shower only, balcony, beach access, pet policy, and soundproofing where reviews raise it.
 
 **In warm destinations, prefer a pool — and treat its absence as a real cost.** Where the climate research puts average highs around 27°C / 80°F or above during the stay, or the trip is beach- or tropical-shaped, a pool stops being a luxury and becomes the thing that makes an afternoon survivable when it is too hot to walk around. So:
 
@@ -145,6 +157,14 @@ Three things, in this order:
 
 Check the **official site** for parks, museums, and monuments — timed entry, lottery systems, permit windows that open months ahead and sell out in minutes, free days, closure days, and last-admission times that are not the closing time.
 
+**1b. Ticketed events in the window — check these whether or not the traveller named any.** They are the highest-lead-time items in any trip and the ones most often missed, because no interest category implies them:
+
+- **Sport.** The domestic league fixture list for every base city and its day-trip radius, including **postseason dates**, which are set later and land in exactly the window a shoulder-season trip occupies. Check current standings if the postseason is in play, so the synthesis knows whether a home fixture is plausible. Note where the season's marquee event *isn't* on, too — that's a real finding.
+- **Traditional or seasonal spectacle** — tournaments, regional touring circuits, ceremonial events. **A sport with no fixture in the window may still have a touring or exhibition circuit passing through**, which is easy to miss by checking only the main calendar and concluding there's nothing on.
+- **Music and performance** — arena shows, festivals, classical seasons, and the local theatre traditions with fixed monthly programmes.
+- For each: **whether a foreign visitor can actually buy a ticket.** Many markets run lottery ballots requiring a domestic phone number, address, or fan-club membership, and resale is illegal in some of them. Say plainly what is realistically obtainable from abroad and what isn't — an attractive event nobody can get into is worse than useless in a plan.
+- **On-sale and ballot dates**, since these are frequently the earliest deadlines in the whole trip.
+
 **2. Festivals, celebrations, and seasonal events** in or near the travel window — national and religious holidays, regional festivals, carnivals, harvests, night markets, sporting fixtures, and natural timing (blossom and foliage forecasts, aurora season, migrations). Also the **experiences unique to this place or this climate** — the thing that cannot be done anywhere else, or cannot be done in another season. Flag anything worth shifting the dates a few days for.
 
 For each festival or cultural event, research the **etiquette**: what to wear, what to bring or offer, photography rules, tipping and gifting norms, whether visitors are welcome to participate or are expected to observe, ticketing or invitation requirements, and behaviors that read as disrespectful locally. Also flag the knock-on effect — festivals fill hotels and raise prices across a wide radius, often months ahead.
@@ -165,6 +185,10 @@ Three tiers, all three required:
 **The established names** — Michelin (including Bib Gourmand, the useful tier), regional awards, Eater-class city guides.
 
 **Where locals actually eat** — the local review platform rather than the international one (Tabelog in Japan, Dianping in China, and the equivalent elsewhere), local-language food blogs, city subreddits, market and street-food guides. Search neighborhood by neighborhood, not city-wide. At least a third of the list should be things that appear on no English top-10.
+
+**Expect the dominant local review platform to be bot-protected, and plan around it rather than into it.** This is the single most predictable obstacle in food research — the platform that holds the best data is also the one most defended. Before spending budget discovering it, check `source-map.md`'s blocked-source list, then work the ladder: the guide's or platform's content still arrives in **labelled search snippets**, and the venue's own site, the local restaurant-booking platforms, and local-language food blogs are usually reachable when the aggregator is not. Ratings from a blocked platform are citable as snippets; **hours and closure days are not** — get those from the venue itself or a places API, because a stale hours line is how a plan breaks on the day.
+
+**Interpret local rating scales correctly.** Several national platforms compress their range hard — a score that looks mediocre against a five-star convention can be exceptional locally. Establish the scale before you filter on it, and say what it is in your notes.
 
 **STREET FOOD — recommend it or don't, based on the health finding, and say which.** In much of the world the street food *is* the cuisine, and steering a traveller into restaurants out of vague caution costs them the best eating in the destination. Agent H is researching water potability and foodborne risk here; take that verdict and act on it:
 

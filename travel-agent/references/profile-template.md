@@ -19,11 +19,22 @@ Last updated: YYYY-MM-DD
 - Languages spoken: (and rough level — gates whether the language agent runs at all)
 - Home airports: (primary, plus drive-radius alternates with drive time)
 - Party usually travelling: (solo / couple / family with ages)
+- **Sleeping arrangements:** (how many separate beds, and who shares — *not* answered by headcount. A group of adults is not couples unless stated, and this decides the whole lodging budget.)
 
 ## Constraints
 - Dietary:
 - Mobility:
 - Hard avoids:
+
+## APIs configured
+| Service | What it covers | Key stored? | Notes |
+|---|---|---|---|
+| | | yes / declined | (rate limit, tier caveats) |
+
+Record declines too, so later runs re-confirm rather than re-ask. Keys live in `~/.claude/settings.json`, never here.
+
+## Booking rules learned the hard way
+Durable, cross-trip lessons — the mistakes worth never repeating. One line each, with the *why*, because a rule without its reason gets dropped the first time it's inconvenient.
 
 ## Loyalty programs
 | Program | Type | Tier | Approx balance | Notes |

@@ -10,7 +10,21 @@ Rules that apply to all of them:
 - Sort by the dimension that matters for the decision, not alphabetically. Usually that is all-in cost or total time.
 - Mark the **recommended row** visibly, and mark any row that is a trap (cheap headline, bad total) so it is not accidentally chosen.
 - Where a research agent flagged a contradiction between sources, carry it into the matrix rather than resolving it silently.
-- **Every row ends in a link, and it is the operator's own.** Whatever the row recommends — a flight, a room, a table, a tour, a car, a train, a ticket — the reader must be able to act on it from that row. Not from a bibliography at the bottom of the page. Where an official page genuinely cannot be found, write that in the cell rather than linking something that merely looks official.
+- **Every row carries a link, and it is the operator's own.** Whatever the row recommends — a flight, a room, a table, a tour, a car, a train, a ticket — the reader must be able to act on it from that row. Not from a bibliography at the bottom of the page. Where an official page genuinely cannot be found, write that in the cell rather than linking something that merely looks official.
+
+### Column order
+
+**This applies to any matrix wide enough to scroll horizontally** — lodging, flights, excursions, food, day trips. Narrow tables that fit on one screen can put the link last; the problem this solves doesn't arise there.
+
+For the wide ones the order below is the order they appear, and it is not cosmetic: past a dozen columns the first few decide whether the table is usable at all.
+
+1. **Identity** — what this row is. Pinned when the table scrolls.
+2. **The normalized comparator** — the one number that is comparable *across rows*, and pinned alongside identity. Usually **per person per night** for lodging, per person for tours, all-in per traveller for flights. This is not the same as the total, and the total is the wrong thing to lead with: a four-night stay and a one-night ryokan have totals that cannot be compared at all, while their per-person-per-night figures can.
+3. **The action link** — immediately after. The reader who has decided from the first two columns should not scroll through twenty more to find how to book it. Putting it last, as is conventional, means the two ends of the decision sit as far apart as the table allows.
+4. **The total**, and any other money.
+5. **Everything else**, grouped so related fields sit together — configuration, then amenities, then access, then reviews and cautions.
+
+Where several tables in one section describe variants of the same thing — city hotels and ryokan, say — **keep the column positions identical and adapt the labels**. "On-site food" becomes "Dinner and breakfast" for a ryokan where meals are the point; "neighbourhood safety" becomes "setting" where there is no neighbourhood. Same skeleton, so a reader who has learned one table can read the next; different words, so each says something true.
 - Where a matrix cell compresses a complex rule into a few words — a fare condition, a compensation regime, a visa route, an insurance term — carry a **further-reading link to the authoritative text** alongside it. The reader should never have to go searching for the rule you summarized.
 
 ## Contents
@@ -37,7 +51,9 @@ The core matrix. Non-stop options first, then one-stop, sorted by all-in cost wi
 
 | Column | Contents |
 |---|---|
-| Option | Short label used in the itinerary and checklist |
+| **Option** | Short label used in the itinerary and checklist. **Pinned** |
+| **All-in price** | Base fare + bags + seat selection + fees, per traveller, both currencies. **Pinned** — the comparator every row is judged on |
+| **Book direct** | The carrier's own booking page, immediately after the price |
 | Routing | `JFK → NRT` or `JFK → ICN → NRT` |
 | Stops | 0 / 1 / 2 |
 | Airline + aircraft | Carrier and equipment — a 787 and a 757 on the same transatlantic route are different trips |
@@ -45,7 +61,6 @@ The core matrix. Non-stop options first, then one-stop, sorted by all-in cost wi
 | Flight time | In the air |
 | **Door-to-door** | Home to lodging, including transfers and a realistic airport buffer. The number that actually matters |
 | Fare class | Basic economy / economy / premium / business / first |
-| All-in price | Base fare + bags + seat selection + fees, both currencies |
 | What's included | Carry-on and checked allowance, seat selection, changes, upgrade eligibility, points earning rate, lounge, seat type on the long leg (lie-flat / angled / recliner) |
 | **Ticket structure** | **One ticket (single PNR) or separate tickets.** On separate tickets a missed connection is entirely yours — no rebooking, no duty of care, fare gone, bags not through-tagged. Self-transfer products look like ordinary connections and are not. This column decides bookings and belongs next to the price, not in a footnote |
 | **Compensation regime** | EU261 / UK261 / APPR / DOT / none, and what a long delay or cancellation is worth. **Mark itineraries that fall outside every regime as a trap row** — a $40 saving that gives up a potential €600 entitlement is a bad trade that the fare comparison alone will never reveal |
@@ -55,7 +70,6 @@ The core matrix. Non-stop options first, then one-stop, sorted by all-in cost wi
 | Change / refund | The real terms, not the marketing phrase |
 | **Airport → lodging** | Cost band and time from *that* airport to the actual lodging or first activity, plus mode. Required whenever a metro has more than one usable airport — a cheap fare into the far airport routinely loses once a $70, 90-minute transfer is counted |
 | Award option | Points price if applicable, cross-referenced to matrix 9 |
-| Book direct | Link to the carrier's own booking page |
 
 Follow with a short note on what date flexibility is worth in money, if dates are flexible.
 
@@ -105,15 +119,22 @@ Hotels and homeshares appear in **one table, priced on the same all-in basis** �
 
 | Column | Contents |
 |---|---|
-| Property | Name and type (hotel / apartment / homeshare / ryokan / hostel), and the platform |
+| **Property** | Name and type (hotel / apartment / homeshare / ryokan / hostel), and the platform. **Pinned** — the row is meaningless without it once the table scrolls |
+| **Per person / night** | **Pinned alongside the name, because it is the only figure comparable across rows.** Stays differ in length and configuration — a four-night two-room booking and a one-night ryokan have totals that cannot be set against each other, while these can. Derived from the all-in total, not from a headline rate. **Only meaningful between rows whose bed configuration actually matches the party**: a per-person figure computed off a shared bed is not a cheaper option, it is a different one |
+| **Book** | The operator's own link, immediately after the price. A reader who has decided from the first two columns should not scroll twenty more to act. For a rejected row, say **Rejected** here rather than leaving a live link to something you are advising against |
+| **All-in total** | For the whole stay, after resort fees, city and tourist taxes, parking — and for homeshares, **cleaning and service fees divided across the actual number of nights**. A $90 listing with a $150 cleaning fee is $140/night over three nights, and the nightly rate on the search page is fiction. Both currencies |
+| Type | Hotel, serviced apartment, ryokan, homeshare — and how many rooms the booking is |
 | Neighborhood | And in one phrase what that neighborhood is like |
-| **All-in nightly** | After resort fees, city and tourist taxes, parking — and for homeshares, **the cleaning and service fees divided across the actual number of nights**. A $90 listing with a $150 cleaning fee is $140/night over three nights, and the nightly rate on the search page is fiction. Both currencies |
+| **Bed configuration** | **The field that invalidates every other one if it is wrong.** Explicit, never an occupancy number: "2 rooms × 2 single beds = 4", "1 room, 4 separate futons". **Room count is not bed count** — most markets sell a room type that reaches its stated occupancy only by two people sharing, and it is usually the cheapest row in the table. Where the party doesn't share, those **fail: show them struck through with the reason, not deleted**, or the reader rediscovers them on the booking site and assumes they were missed. `BED CONFIG UNVERIFIED` where the listing won't say |
 | Homeshare checks | Only for homeshares: short-term-rental **legality and licence number** in that city (unlicensed listings get cancelled, sometimes days out), check-in method and what happens on a late arrival, and whether anything about the listing looks like a scam — no review history, off-platform payment requests, price far below market |
 | What it includes that the other doesn't | Hotels bring breakfast, housekeeping, a front desk, and a late-arrival guarantee. Homeshares bring a kitchen, laundry, separate bedrooms, and space. Name the trade rather than burying it |
 | **Pool** | Yes/no, and if yes: indoor or outdoor, heated, hours, and **confirmed open on the travel dates** — seasonal closures and renovations are common and are the worst way for this to go wrong. Note when it is plunge-sized rather than swimmable. **In warm destinations this column carries real weight** (see below) |
 | **A/C** | Never assume it. Much of Europe, older Japanese stock, and heritage properties have none, or have it only in some rooms. Note whether it is room-controllable or on a building schedule |
 | **Lift** | And which floor. A fourth-floor room up stairs is a different proposition with luggage, and old European buildings routinely have no lift |
-| **Other amenities** | Kitchen (and what is actually in it), laundry — in-unit, facility, or paid service — Wi-Fi quality not just presence, parking and its nightly cost, breakfast and its hours, luggage hold before check-in and after checkout, gym, on-site food, fridge, bath vs shower, balcony, accessibility features where the party needs them |
+| **Gym** | Hours — many are 24-hour, many close at 22:00, and a few are 06:00–09:00 only, which is useless to most people. Whether it costs extra. And what is **actually in it**: "fitness centre" covers both a real gym and one treadmill in a converted storeroom, and only photos or recent reviews tell you which |
+| **Spa, sauna &amp; baths** | The single most under-weighted amenity in most lodging research, and a genuine quality-of-life item on a long or cold trip. Note the type — spa, sauna, thermal or hot-spring bath, hammam, plunge pool — whether it is **free to guests or charged** (often a per-visit fee even at a property that advertises it), the hours, whether it is gender-separated or mixed, and any **rule that would exclude a member of the party** (tattoo policies, swimwear requirements, age limits). Where a destination has a bathing culture, a property with a proper bath at business-hotel prices beats a plainer room at the same rate, and the recommendation should say so |
+| **On-site food &amp; drink** | Restaurant, bar, café, room service **and its hours** — plus the honest verdict on whether any of it is worth eating in. This matters most in two specific cases: a **late arrival** when nothing outside is open, and a **neighborhood that is dead at night**, where "there's a restaurant downstairs" changes the whole stay. Note the last order time; a hotel restaurant that stops serving at 20:00 is not a fallback |
+| **Other amenities** | Kitchen (and what is actually in it), laundry — in-unit, facility, or paid service — Wi-Fi quality not just presence, parking and its nightly cost, breakfast and its hours, luggage hold before check-in and after checkout, fridge, safe, bath vs shower only, balcony, soundproofing where reviews raise it, pet policy, and accessibility features where the party needs them |
 | Direct vs. OTA | The delta, and what the direct rate includes that the OTA rate does not — plus whether the OTA booking earns points and elite recognition at all |
 | Included | Breakfast, airport shuttle, transit pass, lounge, late checkout |
 | Transit & walk access | Nearest station and walk time, walkability of the immediate area, and whether there is anywhere to eat nearby at night |
@@ -122,8 +143,13 @@ Hotels and homeshares appear in **one table, priced on the same all-in basis** �
 | Platform score | With review count |
 | **Independent review read** | Google Maps rating and count, plus what Reddit, forums, and local-language reviews say. Separate column from the platform score on purpose |
 | **Complaint themes** | The specific recurring complaints — noise, thin walls, slow lifts, the block after dark. More useful than any number |
-| **Neighborhood safety** | With the source. Distinguish *actually dangerous* from *unpleasant after dark* from *dead at night* from *far from everything* — these get conflated constantly and only one is a safety issue |
-| Book direct | Link |
+| **Neighborhood safety** | With the source. Distinguish *actually dangerous* from *unpleasant after dark* from *dead at night* from *far from everything* — these get conflated constantly and only one is a safety issue. For a property with no neighbourhood to speak of — a mountain ryokan, an island resort — relabel this **Setting** and describe what is actually around it |
+
+**Where the same section holds several lodging types**, keep these column positions and adapt the labels: *On-site food* becomes **Dinner and breakfast** for a ryokan where the meals are the reason to go, and gains room for what the kaiseki actually is; *Direct vs. OTA* is where a direct-booking discount belongs; and a **Season note** column earns its place wherever an ingredient, a road, or a facility opens or closes on a date near the stay.
+
+**The caption carries the method.** Dates, party size, any hard constraint applied as a filter, the source and the date it was pulled, and — where cells are empty — one line saying that blanks are marked rather than dropped. A reader who lands on a table mid-page should be able to tell from the caption alone what was compared, on what basis, and how much of it is confirmed.
+
+**Verify amenities against photos and recent reviews, never the checkbox.** OTA amenity lists are generous and stale — they are where a drained seasonal pool, a broken lift, a "kitchenette" that is a kettle, and a gym consisting of one exercise bike all survive indefinitely. The property's own site is better; recent guest photos and reviews are best, because that is the only place a facility being *closed for renovation on your dates* actually surfaces. Any amenity load-bearing enough to influence the pick gets confirmed this way before it earns a recommendation.
 
 **Warm destinations: rank a usable pool above an equivalent property without one.** Where the climate research puts average highs at or above roughly 27°C / 80°F during the stay, or the trip is beach- or tropical-shaped, a pool stops being a luxury and becomes what makes the hottest part of the day usable. Say so in the recommendation rather than leaving the reader to spot it in a column — and where the otherwise-best option has no pool, price the trade honestly: a nearby beach, a public lido, or a day pass at another hotel sometimes covers it, and that is worth checking rather than assuming.
 
@@ -131,9 +157,10 @@ Hotels and homeshares appear in **one table, priced on the same all-in basis** �
 
 | Column | Contents |
 |---|---|
-| Experience | And what it actually is |
+| **Experience** | And what it actually is. **Pinned** |
+| **Price** | Both currencies, **per person**, noting group discounts. **Pinned** — the comparator across rows |
+| **Book direct** | The operator's own page, immediately after the price. Where a marketplace listing resells an operator's own tour, link the operator |
 | Operator | Direct operator, and whether the marketplace listing is a resale |
-| Price | Both currencies, per person, noting group discounts |
 | Duration | Including transit to the start point |
 | **Transport included** | What the tour covers — this feeds back into the ground-transport plan and can make an expensive tour the cheap option |
 | Booking lead time | And whether it sells out; permit and lottery windows called out separately |
@@ -141,7 +168,6 @@ Hotels and homeshares appear in **one table, priced on the same all-in basis** �
 | Season / crowd notes | Best time of day, closure days, last admission |
 | Platform rating | With count |
 | **Independent review read** | Google Maps and community consensus, separate from the selling platform's rating. Flag operators whose off-platform reputation contradicts their listing |
-| Book direct | Link |
 
 ## 6. Food
 
@@ -149,16 +175,18 @@ Hotels and homeshares appear in **one table, priced on the same all-in basis** �
 
 | Column | Contents |
 |---|---|
-| Spot or dish | The specific place, and what to order there |
+| **Spot or dish** | The specific place, and what to order there. **Pinned.** Give the name exactly as the source has it, so it can be machine-verified |
+| **Price band** | Both currencies, per person. **Pinned** |
+| **Link** | The venue's own site or social page, and the **reservation link** where one is needed — the specific booking platform, not "call ahead". For a market or a street-food cluster, a map link to the actual location, since the address alone is often unhelpful. Where a place genuinely has no web presence — true of the best sodas, stalls and family kitchens — write `no online presence` and give the map pin instead |
 | Tier | Must-try / established name / local favorite / **street food**. Aim for at least a third in the last two |
 | Neighborhood | And which itinerary day it fits |
-| Price band | Both currencies |
+| **Address** | The verified street address as printed by the venue or the local platform. This is what a places lookup resolves against, and a paraphrased name with no address cannot be checked |
 | Reservation | Needed or not, platform, and **how far ahead booking opens** — some open exactly 30 days out at a set hour and fill in seconds |
 | Hours & closed days | From the venue's own page, not a stale aggregator |
 | **Safety note** | Only where it applies, and only concretely. Water-dependent items to skip if the tap isn't potable — ice, fresh juice, raw herbs and salad, unpeeled fruit — and for stalls, whether it's cooked to order in front of you. Leave this cell blank where there is nothing real to say rather than filling it with generic caution, which trains the reader to ignore the column |
 | Practicalities | Cash only and nearest ATM, queue only, no English, dietary suitability |
 | Consensus | Which sources agree, and whether the marketing and the locals disagree |
-| **Link** | The venue's own site or social page, and the **reservation link** where one is needed — the specific booking platform, not "call ahead". For a market or a street-food cluster, a map link to the actual location, since the address alone is often unhelpful. Where a place genuinely has no web presence — which is true of the best sodas, stalls and family kitchens — write `no online presence` and give the map pin instead |
+| **Still open?** | Confirmed against a places lookup where one is available, not just the presence of a listing. **A permanently-closed venue that still ranks well in search is the commonest way a food list goes wrong**, and reading the listing will never catch it |
 
 Where street food is safe, **it belongs in this matrix as a proper tier, not a footnote** — in much of the world it is the cuisine, and routing a traveller into restaurants out of vague caution costs them the best eating in the destination. Where it isn't safe, say so with the reason and point to the same dishes in a safer setting.
 

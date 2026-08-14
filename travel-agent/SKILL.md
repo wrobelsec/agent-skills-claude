@@ -31,7 +31,15 @@ Then ask **one gate round** via `AskUserQuestion` before any real questioning, s
 
 On a first run, follow the gate round with the two profile questions — loyalty programs and the destination wishlist (§6). On later runs, show the stored values back and ask only whether anything changed.
 
-**Quick path** — one more batch: **how flexible the dates are** (see below), budget band and what it covers, party size and ages, pace and interests. Everything else comes from the profile or from a default, and every assumption gets stated in the deliverable with an offer to re-run that leg if it is wrong.
+**Quick path** — one more batch: **how flexible the dates are** (see below), budget band and what it covers, **party size and sleeping arrangements**, pace and interests. Everything else comes from the profile or from a default, and every assumption gets stated in the deliverable with an offer to re-run that leg if it is wrong.
+
+**Sleeping arrangements are a distinct question, and headcount does not answer it.** Ask how many separate beds the party needs and who, if anyone, shares. Four adults travelling together are not two couples unless they say so, and the answer decides the entire lodging budget — a "two rooms for four people" search returns rooms holding one bed each across most of the world. Missing this on a live run invalidated every lodging price in three cities, and the traveller caught it after the plan was published.
+
+**Ask what they specifically want to *do*, not just what they're interested in.** Broad interest categories — food, culture, nature, nightlife — do not surface the things that need booking months ahead, and those are exactly the things that get missed. A traveller who ticks "cities and modern culture" may also want a **sports fixture, a sumo tournament, a concert, a festival, a cooking class, a distillery tour, a market at dawn, a specific museum exhibition** — and none of that follows from the category.
+
+This matters because these are the highest-lead-time items in any trip. On a live run the traveller had to ask for sumo, baseball and concerts explicitly after the research was already underway, and it turned out **the autumn sumo tour passed through their base city on two days of their stay** and a **home playoff game was plausible twenty minutes away** — neither of which any interest category would have produced. Both had ticket windows that had already opened.
+
+So ask directly: *is there anything specific you want to see or do — a match, a performance, a festival, a class, a particular place?* Then check the window for those categories whether or not they name any, since a fixture list is cheap to check and impossible to recover once sold out.
 
 **Date flexibility is a distinct question, always asked.** Not "what are your dates" but *how movable are they*, which changes what the research is for:
 
@@ -42,6 +50,41 @@ On a first run, follow the gate round with the two profile questions — loyalty
 **In-depth path** — a few rounds adding: destination shortlist or "surprise me", passport nationality per traveller, mobility and dietary needs, appetite for long layovers and multi-city routing, willingness to drive abroad, hotel vs. whole-home preference, trip themes, and hard avoids. Write the durable answers back to the profile.
 
 **Currency** is asked once and stored. Every price appears in **both** the local and the user's preferred currency — `¥18,000 (~$118)` — with the FX rate and its lookup date stated once at the top. A rate quoted without a date is worthless a month later.
+
+### API discovery — after intake, before the fan-out
+
+Some of what this skill scrapes is structured data behind an API, and the API version cannot be misread or invented. **Which APIs exist is a per-destination question, not a fixed list** — hardcoding a national rail programme into a skill meant for anywhere is how a source list goes stale.
+
+A short scouting pass, before any research agent is dispatched:
+
+1. **Find what exists for this destination.** Aim at the categories scraping handles worst — **fares, lodging rates, place hours and status, transit timetables** — plus whatever the destination happens to run: a national rail open-data programme, a tourism-board API, a municipal open-data portal. The keyless commodity endpoints (geocoding, daylight, holidays, weather, FX) are already in [source-map.md](references/source-map.md) and need no discovery.
+2. **Fetch each candidate's current rate limit and quota live.** Never carry these between runs. Free tiers get cut, endpoints move hosts, and services break — one planning pass found a currency API had changed host and a widely-recommended advisory API was serving a dead TLS certificate.
+3. **Put it to the user in one round**, then
+4. **Pass the resolved list into every brief** — endpoint, auth shape, and the **live rate limit**, so agents pace against a real number instead of guessing. Same problem as the shared search budget, same treatment.
+
+**The consent question — three tiers, with the reasoning stated rather than assumed:**
+
+- **Keyless only** — no signup, works immediately. Covers the commodity layer; leaves fares, hours and timetables to scraping.
+- **Free-tier keyed** — a signup or two, and this is where the expensive failures get fixed at the root. Name them concretely: on a live run, a multi-city fare **never resolved at all**, leaving a $2,287–$3,658 spread in the flight budget, and a food track **fabricated its sources** largely because there was no structured way to confirm an address or whether a venue had closed.
+- **Paid too** — if they're open to spending, the same pass looks for commercial options and reports cost against what each unlocks.
+
+**Flag the friction at ask time**, because it's what makes people abandon setup halfway: some free tiers **require billing details on file** even to use the free allowance, and some serve **test or cached data rather than live production data** — which trades one confidently-wrong number for another unless it's labelled.
+
+**Keys** go in the `env` block of `~/.claude/settings.json`. That is a plain-text file on disk, the same caveat that governs the traveler profile.
+
+### You make the keyed calls, not the agents
+
+**Research agents never hold a credential.** They have no shell and no key, deliberately — a key passed into a subagent prompt lands in the transcript, and there is no reason to put it there. You hold the keys and call on their behalf, in two phases:
+
+**Before dispatch — pre-fetch what is knowable in advance** and put the *results* into the briefs: fares for the routes in scope, entry requirements for the passport-and-destination pairs, coordinates for the cities and neighbourhoods, holidays, climate normals, the dated FX rate. Carry any caveat with the data rather than stripping it — free-tier flight data that is partly cached answers the structural question but not the exact fare, and an agent that isn't told that will quote it as gospel.
+
+**After return — verify what the agents found.** Anything discovered mid-research can't be pre-fetched, so it gets checked during synthesis: geocode every coordinate, run `business_status` on every venue, confirm opening hours and closure days. This is better than having each agent verify its own work, for two reasons: it applies one consistent standard instead of twelve, and it is the point where a fabricated row actually gets caught — a venue name that won't resolve is the tell.
+
+Brief the agents accordingly: **return names and addresses exactly as the source gives them**, so a lookup can resolve them, and never invent a coordinate or an opening time, because those are the fields that get machine-checked.
+
+**Record which APIs the user configured and which they declined** in `traveler-profile.md`, so later runs don't re-ask — the same re-confirm-don't-re-interrogate rule that already governs loyalty programs.
+
+**Degrade gracefully, always.** Every API call site checks for its key and **falls back to the normal research path when it's absent**, noting in the findings that it did. The skill must work unchanged on a machine with no keys configured: a missing key is a quality reduction, never an error.
 
 ## 2. Research rules
 
@@ -70,7 +113,16 @@ Depth comes from the gate round:
 
 When either is skipped, **say so and why**. A silently omitted track looks identical to one that found nothing.
 
-Spawn `general-purpose` subagents in the **background**, all in one message, each with its brief from `references/agent-briefs.md` and its `model` from §4. **G and K run in a second wave after A returns** — layover explorability and ticket structure both depend on which routings actually exist.
+### Dispatch — in waves, never all at once
+
+**The `WebSearch` budget is shared across every sibling agent, and so is the session limit.** This is the most important operational fact in the skill and it is invisible until it bites. A run that dispatched seventeen agents in a single message exhausted the shared search pool in about four minutes, took the session limit down with it, and lost **fourteen of the seventeen** before any returned. Everything after that was recovery.
+
+- **Cap concurrency at 4–6 agents in flight.** The cap is on the *total*, not per city — per-city splits multiply the count fast, and exhaustive depth on a three-city trip is well past a dozen tracks.
+- **Dispatch in waves, ordered by what unblocks synthesis.** Air and entry/health first, since routing and lead-time constraints shape everything downstream. Then lodging and day trips. Then food, sentiment, points, law, language.
+- **Give every brief an explicit search budget** — a stated number of `WebSearch` calls, scaled to how many agents are in flight — alongside its numbered priority list, so an agent running low knows what to drop rather than thinning everything. Agents respect a stated cap and invent their own when none is given.
+- **G and K run after A returns.** Layover explorability and ticket structure both depend on which routings actually exist.
+
+Spawn in the **background** as `travel-researcher` or `travel-scout` (§4), each with its brief from `references/agent-briefs.md`.
 
 | | Track |
 |---|---|
@@ -91,12 +143,18 @@ Agents return raw sourced findings as tables plus notes, never narrative. Synthe
 
 ## 4. Model policy
 
-You — intake, synthesis, matrices, recommendations, the artifact — run on the latest flagship model. Research agents run cheaper, because their job is retrieval and structured reporting, not judgment about the trip as a whole. Pass `model` explicitly on every `Agent` call.
+You — intake, synthesis, matrices, recommendations, the artifact — run on the latest flagship model. Research agents run cheaper, because their job is retrieval and structured reporting, not judgment about the trip as a whole.
 
-| `model` | Agents | Why |
-|---|---|---|
-| `sonnet` | A, C, G, H, I, J, K | Fine print is where money is lost and trouble starts — fare conditions, award restrictions, contradictory reviews, and for H/J/K vaccination rules, criminal law, and whether a ticket strands you. A confidently wrong answer here is far worse than a slow one. |
-| `haiku` | B, D, E, F, L | Largely retrieval and list-building against named sources. Fast, cheap fan-out is the right trade. |
+**Two custom agent types carry the model and the standing rules**, so the per-track brief no longer has to restate them. They live in `.claude/agents/` and are dispatched by name rather than by passing `model` on the call:
+
+| Agent type | Model | Tracks | Why |
+|---|---|---|---|
+| **`travel-researcher`** | `sonnet` | A, C, E, G, H, I, J, K | Fine print is where money is lost and trouble starts — fare conditions, award restrictions, contradictory reviews, and for H/J/K vaccination rules, criminal law, and whether a ticket strands you. A confidently wrong answer here is far worse than a slow one. |
+| **`travel-scout`** | `haiku` | B, D, F, L | Largely retrieval and list-building against named sources. Fast, cheap fan-out is the right trade. |
+
+**E moved from the cheap tier to the careful one**, and the reason generalizes: **any track that emits links, addresses, or identifiers at volume runs on the more careful model, because its failure mode is fabrication rather than slowness.** On a live run, two of three food agents on the cheap tier produced sourcing failures — one invented a table of URLs and reused a single venue ID across two restaurants, another returned map pins in the wrong prefecture. The careful-tier re-run hit the same blocked site and reported the block honestly instead of filling the gap. That difference is worth the cost.
+
+Both agent definitions carry the link rules, the blocked-source ladder, the API-first list, budget triage, the `UNVERIFIED` convention, and the both-currencies requirement. Keeping those in the agent rather than the prompt is deliberate: on the run above, the safety rules were only as reliable as remembering to paste them into all thirty-seven dispatches, and the one that shipped without them is the one that fabricated.
 
 Store the assignment in the profile alongside the model lineup it was chosen against. Offer it pre-filled in the gate round every run. Ask **fresh** — with a short note on which of the now-available models suits which track — on a first run and whenever the lineup has changed, so the skill does not quietly pin itself to a superseded generation.
 

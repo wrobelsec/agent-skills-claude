@@ -21,6 +21,19 @@ The standards every agent works to, and that you hold their findings to during s
 
 **`UNVERIFIED` is a valid answer and a guess never is.** Anything you could not confirm live gets labeled `UNVERIFIED` with a note on what you tried. An honest hole is more useful than a plausible invention, and it tells the user exactly where to spend their own five minutes. Never invent flight numbers, gate times, addresses, phone numbers, opening hours, or prices. In the health, entry, and legal sections an invented fact is not just unhelpful, it is dangerous.
 
+**Links you may emit.** The rule above is a prohibition; this is the procedure that enforces it, and it exists because an agent on this skill fabricated a table of sources and the entire track had to be discarded and re-run twice.
+
+- **Never print a URL you did not fetch, or see returned in a live search result, this session.** A plausible-looking URL is a fabricated one.
+- **Never construct a shortened link.** Real short links are opaque random strings; a readable one — `goo.gl/maps/SomePlaceName` — is invented by definition. Give the **verified full street address** instead, or write `address UNVERIFIED`.
+- **Scan your own output before returning it.** Duplicate IDs or near-identical URLs across different entries are the signature of invention; that is precisely how the failure above was caught.
+- Where a page is fetch-blocked, a **search-result snippet is citable — provided it is labelled as a snippet** rather than presented as a fetched page.
+
+**A short honest table beats a long padded one.** Six solid rows plus a plain statement of what blocked you is a success. Twenty rows where fourteen are plausible-looking guesses is a failure that discredits the other six.
+
+**Don't substitute a weaker source class for the one that defines the track.** If the sources that give a piece of research its purpose are unreachable — forums for community sentiment, the operator for fares, the ministry for law — say so and return less. A secondhand summary standing in for the primary source is worse than an empty section, because it looks complete. This has happened: a sentiment sweep that could not reach the forums used a blog's summary of them instead, which is not a degraded version of that research, it is a different and near-worthless one.
+
+**When a source won't load, diagnose before retrying.** Four failures look alike and need opposite responses — bot protection that will never clear, rate limiting caused by your own sibling agents, a JS-rendered page that needs a browser rather than a fetcher, and a site that is simply broken. The taxonomy and the response for each are in [source-map.md](source-map.md) under *When a source won't load*. Conflating them wastes budget retrying the unretryable and writes off domains that were only partly blocked.
+
 **Direct plus aggregator, always.** Check the operator's own site alongside every aggregator and report the delta: price differences, direct-booking perks, cancellation terms that differ by channel, and points or elite recognition that OTA bookings forfeit. Low-cost carriers and many local operators are absent from meta-search entirely — checking only the aggregator means missing them.
 
 **Triangulate before recommending.** An aggregator listing plus community sentiment before anything is called must-see. When a top-10 list and the local subreddit disagree, that disagreement *is* the finding — surface it rather than quietly picking a side.
@@ -40,6 +53,8 @@ The standards every agent works to, and that you hold their findings to during s
 **Both currencies, always, with a dated rate.** Every price appears in the local currency and the user's preferred currency — `¥18,000 (~$118)` — with the FX rate and its lookup date stated once at the top of the report. A rate quoted without a date is worthless a month later.
 
 **All-in, not headline.** The advertised number is almost never the number. Get to the real total: airline bag and seat fees, resort fees and tourist taxes on lodging, homeshare cleaning and service fees spread over the actual number of nights, mandatory rental insurance, service charges and VAT on restaurant bills, carrier surcharges on award tickets. **Flag the false floors explicitly** — the fare that is cheapest until a bag is added, the hotel that is cheapest until the taxi is added, the award that is free until the surcharge is added.
+
+**Read the validity window printed on the page.** Fare tables, passes, and tourist cards routinely carry a "valid through" date, and cached or superseded versions of those pages rank well in search. This is the commonest way a stale number enters a plan — a Hakone pass showed ¥6,100 on a page valid only through the previous September, against ¥7,100 live. If a price page states a validity period that has passed, the number is wrong no matter how official the source looks.
 
 **Look for the discount before quoting the price.** Not just flights and hotels: city passes with the break-even actually calculated against this itinerary rather than assumed, railcards, association and warehouse-club rates, corporate rental codes, operator-direct versus marketplace pricing, museum free days, concession pricing, lunch menus from the same kitchen, dining programs, shopping portals, and memberships the user may already hold. Only surface offers verified on the operator's own page — a promo code that fails at checkout is worse than none.
 
@@ -129,5 +144,7 @@ Prefer the **operator's own URL** over an aggregator's, since that is the one th
 **Mark the traps as well as the picks.** The row that looks cheapest and isn't deserves to be visibly flagged, or someone will choose it.
 
 **Surface contradictions rather than resolving them silently.** If two agents came back with different numbers, say so and give the reason to trust one.
+
+**One fact, one owner.** Where two tracks will both plausibly touch the same fact, the briefs name which one owns it and which defers. Without that, both research it shallowly and neither resolves it — two tracks in one run returned opposite answers on when autumn foliage peaks, neither consulted the national meteorological service, and the contradiction survived into synthesis. For anything seasonal, forecast-based, or otherwise owned by an official body, **name the authoritative source in the brief** rather than leaving each agent to find its own and land somewhere different.
 
 **Write like an agent who will hear about it if the recommendation is wrong.** Give the pick, then the reasoning. Say when a popular thing is not worth it and what the sources say instead. Never smooth over a gap.

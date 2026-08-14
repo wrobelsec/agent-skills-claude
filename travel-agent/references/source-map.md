@@ -6,6 +6,8 @@ Every source below is only as good as its date. Carry the URL and the access dat
 
 ## Contents
 
+- [When a source won't load](#when-a-source-wont-load)
+- [Query an API before you scrape a page](#query-an-api-before-you-scrape-a-page)
 - [Flights](#flights)
 - [Rail, road, bus, ferry](#rail-road-bus-ferry)
 - [Luggage forwarding and storage](#luggage-forwarding-and-storage)
@@ -23,6 +25,46 @@ Every source below is only as good as its date. Carry the URL and the access dat
 - [Fare rules, passenger rights and airports](#fare-rules-passenger-rights-and-airports)
 - [Language and communication](#language-and-communication)
 - [Search patterns that work](#search-patterns-that-work)
+
+---
+
+## When a source won't load
+
+Four failures look alike from the outside and need opposite responses. Treating them all as "blocked" wastes budget retrying the unretryable, and writes off domains that were only partly closed.
+
+| What you see | What it is | What to do |
+|---|---|---|
+| **403**, or a "checking your browser" interstitial | **Bot protection.** A server-side fetcher has no JS, a datacenter IP, and a non-browser TLS fingerprint — that trips generic anti-automation. Fare and rate pages are defended hardest, because scraping them is a commercial concern. | **Will not clear on retry.** Use labelled search snippets, or a different source entirely. Stop spending budget on it. |
+| Works early, then **429 or empty** later in the run | **Rate limiting — frequently self-inflicted**, as sibling agents pile onto the same host from one egress. | Fetch early, keep what you get. The real fix is the concurrency cap in `SKILL.md`, not a workaround. |
+| **200 OK** returning a shell, an error string, or nothing useful | **JS-rendered.** Not a block at all — there is simply nothing in the HTML. | Use the in-app browser, which executes JS. A plain fetcher will never work here. |
+| **DNS failure, TLS certificate mismatch, genuine 404** | **The site is broken — or you guessed the URL.** | Nothing to work around; mark `UNVERIFIED`. Distinguish "the site refused me" from "I invented a path" — only the first is a source problem. A certificate mismatch is worth reporting to the user; it says something about the business. |
+
+Two distinctions worth carrying:
+
+- **Partial blocks are common — probe before writing off a domain.** One airline served its HTML award pages fine and blocked only a PDF download. One government site blocked its advisory page while its immigration pages worked.
+- **Sources that reliably work are as useful to record as ones that don't.** Domestic booking platforms, national meteorological services, and government (`.gov`, `.go.jp`, and equivalents) sites are consistently fetchable — they are less commercially sensitive and therefore less defended. Domestic lodging platforms are also where precise detail lives that international aggregators flatten away.
+
+**This is a living list.** Add what blocks and what works on every run, with the failure type, so the next run doesn't rediscover it. One track lost budget to the same bot-protected restaurant site three separate times in one run.
+
+## Query an API before you scrape a page
+
+For commodity facts — geography, time, weather, currency, holidays — structured data beats scraping, can't be misread, and can't be fabricated. The following are **keyless and verified working**; re-check before relying on them, since free services move and fold.
+
+| Need | Endpoint | Notes |
+|---|---|---|
+| **Geocoding, and checking a coordinate is where you claim** | `nominatim.openstreetmap.org/search?q=…&format=json` | Descriptive User-Agent, ~1 req/sec. **Use it to verify every coordinate you emit** — an agent once returned map pins in the wrong prefecture, which one lookup would have caught. |
+| **Daylight** | `api.sunrise-sunset.org/json?lat=…&lng=…&date=…&formatted=0` | **Returns UTC — convert to local.** Fills the sunrise/sunset gap when the usual almanac sites block. |
+| **Public holidays** | `date.nager.at/api/v3/PublicHolidays/{year}/{ISO2}` | Authoritative and instant, versus cross-checking blog calendars. |
+| **Weather and climate** | `api.open-meteo.com/v1/forecast` · historical at `archive-api.open-meteo.com` (to 1940 — derive normals) | **Different hosts.** Use the national met service as the authority and this for machine-readable numbers. |
+| **FX** | `api.frankfurter.dev/v1/{YYYY-MM-DD}?from=XXX&to=YYY` | ECB reference rates. **Returns the date with the rate**, which is exactly what the money rules require. The old `.app` host 301s. |
+
+Also useful and keyless: **OSRM's demo server** for driving distances, and the **USGS feed** for seismic activity.
+
+**Verified NOT usable:** `travel-advisory.info` serves a certificate for `*.kasserver.com` and fails to load. It is widely recommended and it does not work — proof that this list must be tested rather than copied from a listicle.
+
+**The boundary, stated plainly, because it explains the whole blocklist above.** Keyless APIs cover the commodity layer. The commercially valuable categories — **flight fares, lodging rates, place listings and hours, transit timetables** — sit behind a key or a contract, which is exactly why those sites run bot protection. Reach for an API for the commodity layer; spend the scraping budget on what only scraping can reach.
+
+**Keyed APIs are discovered per destination, not listed here** — see the API discovery step in `SKILL.md`. What's available varies by country, free tiers change, and hardcoding a national transit API into a skill meant for anywhere is how this list goes stale.
 
 ---
 
@@ -138,7 +180,9 @@ Weight recency heavily and note it. Prices and "is it still good" both decay wit
 
 ## Weather and climate
 
-- Climate normals: weather service historical pages, WeatherSpark-class climate summaries, Wikipedia climate tables as a cross-check
+**The national meteorological service is the authority for anything seasonal, and the brief should name it.** Foliage and blossom timing, monsoon onset, first snow, typhoon frequency — every one of these has an official forecaster, and commercial travel sites republishing their own guesses are directional only. Two tracks in one run returned opposite answers on autumn foliage timing because neither consulted the official source; naming it in the brief prevents that.
+
+- Climate normals: weather service historical pages, WeatherSpark-class climate summaries, Wikipedia climate tables as a cross-check — and `archive-api.open-meteo.com` for the same data in machine-readable form
 - Live forecast, only if the trip is inside forecast range, labeled as a forecast with the date pulled
 - Seasonal specifics: monsoon and hurricane windows, wildfire and smoke season, snow closures on passes and trails, daylight hours (a December afternoon in Reykjavík is short), sea temperature, altitude effects
 - timeanddate.com for daylight, holidays, and time zones
