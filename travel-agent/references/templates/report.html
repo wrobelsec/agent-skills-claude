@@ -1,0 +1,374 @@
+<title>{{TITLE}}</title>
+<style>
+:root{
+  --ground:#F4F5F8; --surface:#FFFFFF; --surface-2:#EDEEF3;
+  --ink:#171922; --ink-2:#454A5C; --muted:#6B7186;
+  --rule:#DDDFE7; --rule-2:#C6C9D6;
+  --accent:#36429A; --accent-soft:#E7E9F6;
+  --flag:#A8481F; --flag-soft:#F8E9E2;
+  --ok:#2A6349; --ok-soft:#E1EFE8;
+  --warn:#7C5A10; --warn-soft:#F6EDD8;
+  --shadow:0 1px 2px rgba(23,25,34,.05), 0 4px 16px rgba(23,25,34,.05);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Segoe UI Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0E1017; --surface:#161923; --surface-2:#1E222E;
+    --ink:#E9EAF0; --ink-2:#B9BECD; --muted:#8C93A6;
+    --rule:#272B38; --rule-2:#393F50;
+    --accent:#8E9CE8; --accent-soft:#1C2140;
+    --flag:#E2916A; --flag-soft:#33211A;
+    --ok:#79C6A0; --ok-soft:#15291F;
+    --warn:#D8AC53; --warn-soft:#2A2113;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0E1017; --surface:#161923; --surface-2:#1E222E;
+  --ink:#E9EAF0; --ink-2:#B9BECD; --muted:#8C93A6;
+  --rule:#272B38; --rule-2:#393F50;
+  --accent:#8E9CE8; --accent-soft:#1C2140;
+  --flag:#E2916A; --flag-soft:#33211A;
+  --ok:#79C6A0; --ok-soft:#15291F;
+  --warn:#D8AC53; --warn-soft:#2A2113;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.3);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--sans); font-size:16px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{width:100%; margin:0 auto; padding:0 24px 96px}
+
+/* ---- masthead ---- */
+.mast{border-bottom:1px solid var(--rule); padding:56px 0 32px; margin-bottom:40px}
+.kicker{
+  font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0 0 18px;
+}
+h1{
+  font-family:var(--serif); font-weight:600; font-size:clamp(38px,6vw,62px);
+  line-height:1.02; letter-spacing:-.02em; margin:0 0 10px; text-wrap:balance;
+}
+.sub{font-family:var(--serif); font-size:clamp(19px,2.4vw,24px); font-style:italic; color:var(--ink-2); margin:0 0 28px}
+.facts{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px;
+  background:var(--rule); border:1px solid var(--rule); border-radius:3px; overflow:hidden;
+}
+.fact{background:var(--surface); padding:13px 15px}
+.fact dt{font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:0 0 4px}
+.fact dd{margin:0; font-size:14.5px; font-weight:550; font-variant-numeric:tabular-nums}
+
+/* ---- layout ---- */
+.cols{display:grid; grid-template-columns:1fr; gap:44px; min-width:0}
+@media (min-width:1000px){ .cols{grid-template-columns:190px minmax(0,1fr); gap:52px; align-items:start} }
+/* grid and flex children default to min-width:auto, which makes them grow to fit a wide
+   table instead of letting the table's own container scroll. This is the fix. */
+main{min-width:0; max-width:100%}
+nav.rail{display:none}
+@media (min-width:1000px){
+  nav.rail{display:block; position:sticky; top:26px; font-size:13.5px; line-height:1.45}
+  nav.rail a{display:block; padding:5px 0 5px 11px; color:var(--muted); text-decoration:none; border-left:2px solid var(--rule)}
+  nav.rail a:hover{color:var(--accent); border-left-color:var(--accent)}
+  nav.rail .grp{font-family:var(--mono); font-size:10px; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-2); margin:18px 0 5px 11px}
+  nav.rail .grp:first-child{margin-top:0}
+}
+
+section{margin:0 0 60px; scroll-margin-top:20px}
+h2{
+  font-family:var(--serif); font-weight:600; font-size:30px; letter-spacing:-.01em;
+  margin:0 0 6px; padding-bottom:9px; border-bottom:2px solid var(--ink); text-wrap:balance;
+}
+h3{font-family:var(--serif); font-weight:600; font-size:21px; margin:34px 0 10px; text-wrap:balance}
+h4{font-size:14px; font-weight:650; margin:22px 0 7px; letter-spacing:.01em}
+.lede{font-size:17.5px; color:var(--ink-2); margin:14px 0 22px; max-width:66ch}
+p{max-width:70ch; margin:0 0 14px}
+ul,ol{max-width:70ch; padding-left:20px; margin:0 0 14px}
+li{margin-bottom:7px}
+a{color:var(--accent); text-decoration:underline; text-underline-offset:2px; text-decoration-thickness:.06em}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:2px}
+strong{font-weight:650}
+code{font-family:var(--mono); font-size:.88em; background:var(--surface-2); padding:1px 5px; border-radius:2px}
+
+/* ---- chips ---- */
+.chip{
+  display:inline-block; font-family:var(--mono); font-size:10px; letter-spacing:.07em;
+  text-transform:uppercase; padding:2.5px 7px; border-radius:2px; white-space:nowrap;
+  vertical-align:.1em; font-weight:600;
+}
+.c-ok{background:var(--ok-soft); color:var(--ok)}
+.c-warn{background:var(--warn-soft); color:var(--warn)}
+.c-flag{background:var(--flag-soft); color:var(--flag)}
+.c-acc{background:var(--accent-soft); color:var(--accent)}
+
+/* ---- tables ---- */
+.scroll{
+  overflow-x:auto; margin:16px 0 8px; border:1px solid var(--rule);
+  border-radius:3px; background:var(--surface); scrollbar-gutter:stable;
+}
+table{border-collapse:separate; border-spacing:0; width:100%; font-size:13.5px; min-width:600px}
+th,td{
+  padding:9px 12px; text-align:left; border-bottom:1px solid var(--rule); vertical-align:top;
+  overflow-wrap:break-word; word-break:normal;
+}
+thead th{
+  background:var(--surface-2); font-family:var(--mono); font-size:10px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--ink-2); font-weight:600; white-space:nowrap;
+  position:sticky; top:0; z-index:2;
+}
+tbody tr:last-child td{border-bottom:none}
+td.num,th.num{font-family:var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap}
+caption{caption-side:bottom; text-align:left; padding:9px 12px; font-size:12.5px; color:var(--muted); border-top:1px solid var(--rule)}
+
+/* wide matrices: every spec column rendered, scrolling inside its own container,
+   property and price pinned. table-layout:fixed is required — under automatic
+   layout the browser ignores max-width on cells and sizes them to content, which
+   is what makes long text bleed across neighbouring columns. */
+.wide table{table-layout:fixed; width:max-content; min-width:100%}
+.wide td,.wide th{
+  font-size:12.5px; padding:8px 11px; width:165px;
+  white-space:normal; overflow-wrap:break-word; word-break:normal; hyphens:auto;
+}
+.wide td.num,.wide th.num{white-space:normal}
+.wide th:nth-child(1),.wide td:nth-child(1){
+  position:sticky; left:0; z-index:1; background:var(--surface); width:200px;
+}
+.wide th:nth-child(2),.wide td:nth-child(2){
+  position:sticky; left:200px; z-index:1; background:var(--surface); width:150px;
+  border-right:1px solid var(--rule-2);
+}
+.wide thead th:nth-child(1),.wide thead th:nth-child(2){background:var(--surface-2); z-index:3}
+
+/* Column widths sized to what each field actually holds — yes/no fields stay narrow,
+   prose fields get room. All three lodging tables share one column order. */
+.t-lodging th:nth-child(3),.t-lodging td:nth-child(3){width:96px}          /* Book */
+.t-lodging th:nth-child(4),.t-lodging td:nth-child(4){width:170px}         /* All-in */
+.t-lodging th:nth-child(n+9):nth-child(-n+12),
+.t-lodging td:nth-child(n+9):nth-child(-n+12){width:76px}                  /* pool, a/c, lift, gym */
+.t-lodging th:nth-child(21),.t-lodging td:nth-child(21){width:92px}        /* platform score */
+.t-lodging th:nth-child(7),.t-lodging td:nth-child(7),
+.t-lodging th:nth-child(13),.t-lodging td:nth-child(13),
+.t-lodging th:nth-child(14),.t-lodging td:nth-child(14),
+.t-lodging th:nth-child(15),.t-lodging td:nth-child(15),
+.t-lodging th:nth-child(18),.t-lodging td:nth-child(18),
+.t-lodging th:nth-child(22),.t-lodging td:nth-child(22),
+.t-lodging th:nth-child(23),.t-lodging td:nth-child(23),
+.t-lodging th:nth-child(24),.t-lodging td:nth-child(24){width:215px}
+
+.wide th:nth-child(1),.wide th:nth-child(2){white-space:normal}
+
+/* entry table: passport | country | regime | stay | apply? | where | docs | cost | processing | apply by | source */
+.t-entry th:nth-child(3),.t-entry td:nth-child(3){width:150px}
+.t-entry th:nth-child(4),.t-entry td:nth-child(4){width:110px}
+.t-entry th:nth-child(5),.t-entry td:nth-child(5){width:92px}
+.t-entry th:nth-child(6),.t-entry td:nth-child(6){width:200px}
+.t-entry th:nth-child(7),.t-entry td:nth-child(7){width:200px}
+.t-entry th:nth-child(8),.t-entry td:nth-child(8){width:88px}
+.t-entry th:nth-child(9),.t-entry td:nth-child(9){width:118px}
+.t-entry th:nth-child(10),.t-entry td:nth-child(10){width:104px}
+.t-entry th:nth-child(11),.t-entry td:nth-child(11){width:210px}
+
+/* law table: item | category | what | how it presents | consequence | instead | affects you | source */
+.t-law th:nth-child(3),.t-law td:nth-child(3),
+.t-law th:nth-child(4),.t-law td:nth-child(4),
+.t-law th:nth-child(5),.t-law td:nth-child(5),
+.t-law th:nth-child(6),.t-law td:nth-child(6),
+.t-law th:nth-child(7),.t-law td:nth-child(7),
+.t-law th:nth-child(8),.t-law td:nth-child(8){width:210px}
+
+/* rights table */
+.t-rights th:nth-child(n+3),.t-rights td:nth-child(n+3){width:195px}
+.t-rights th:nth-child(3),.t-rights td:nth-child(3){width:150px}
+.t-rights th:nth-child(6),.t-rights td:nth-child(6){width:230px}
+.t-rights th:nth-child(12),.t-rights td:nth-child(12){width:250px}
+
+/* points table */
+.t-points th:nth-child(n+3),.t-points td:nth-child(n+3){width:190px}
+.t-points th:nth-child(4),.t-points td:nth-child(4){width:230px}
+.t-points th:nth-child(5),.t-points td:nth-child(5){width:110px}
+
+/* food table: spot | price | link | tier | hood | address | resv | hours | safety | practical | consensus | open */
+.t-food th:nth-child(3),.t-food td:nth-child(3){width:130px}
+.t-food th:nth-child(4),.t-food td:nth-child(4){width:110px}
+.t-food th:nth-child(5),.t-food td:nth-child(5){width:150px}
+.t-food th:nth-child(6),.t-food td:nth-child(6){width:215px}
+.t-food th:nth-child(7),.t-food td:nth-child(7){width:150px}
+.t-food th:nth-child(8),.t-food td:nth-child(8){width:190px}
+.t-food th:nth-child(9),.t-food td:nth-child(9){width:170px}
+.t-food th:nth-child(n+10),.t-food td:nth-child(n+10){width:195px}
+
+/* origin-airport routing comparison: option | routing | air | door-to-door | fare | risk | verdict. The airport itself is trip data — it comes from the traveler profile into the table, never into this stylesheet. */
+.t-origin th:nth-child(2),.t-origin td:nth-child(2){width:250px}
+.t-origin th:nth-child(3),.t-origin td:nth-child(3){width:120px}
+.t-origin th:nth-child(4),.t-origin td:nth-child(4){width:120px}
+.t-origin th:nth-child(5),.t-origin td:nth-child(5){width:210px}
+.t-origin th:nth-child(6),.t-origin td:nth-child(6){width:230px}
+.t-origin th:nth-child(7),.t-origin td:nth-child(7){width:250px}
+
+/* distances matrix: pair | dist | walk | taxi | realistic | verdict | notes */
+.t-dist th:nth-child(1),.t-dist td:nth-child(1){width:250px}
+.t-dist th:nth-child(2),.t-dist td:nth-child(2){width:96px}
+.t-dist th:nth-child(3),.t-dist td:nth-child(3){width:86px}
+.t-dist th:nth-child(4),.t-dist td:nth-child(4){width:80px}
+.t-dist th:nth-child(5),.t-dist td:nth-child(5){width:150px}
+.t-dist th:nth-child(6),.t-dist td:nth-child(6){width:130px}
+.t-dist th:nth-child(7),.t-dist td:nth-child(7){width:290px}
+.unv{font-family:var(--mono); font-size:10px; letter-spacing:.05em; color:var(--muted); text-transform:uppercase}
+/* derived ≠ unverified: computed by a stated method, so it carries the method rather than a warning */
+.drv{font-family:var(--mono); font-size:10px; letter-spacing:.05em; color:var(--accent); text-transform:uppercase}
+
+/* ---- callouts ---- */
+.note{
+  border-left:3px solid var(--accent); background:var(--surface); padding:14px 18px;
+  margin:20px 0; border-radius:0 3px 3px 0; box-shadow:var(--shadow);
+}
+.note.flag{border-left-color:var(--flag)}
+.note.warn{border-left-color:var(--warn)}
+.note.ok{border-left-color:var(--ok)}
+.note h4{margin-top:0}
+.note p:last-child,.note ul:last-child{margin-bottom:0}
+
+/* ---- deadline list ---- */
+.dl{display:grid; gap:1px; background:var(--rule); border:1px solid var(--rule); border-radius:3px; overflow:hidden; margin:20px 0}
+.dl-row{background:var(--surface); padding:14px 17px; display:grid; gap:4px 18px; grid-template-columns:1fr}
+@media(min-width:700px){ .dl-row{grid-template-columns:112px 1fr} }
+.dl-when{font-family:var(--mono); font-size:11.5px; font-weight:650; color:var(--flag); letter-spacing:.02em; padding-top:2px}
+.dl-when.soft{color:var(--muted)}
+.dl-what{font-size:14.5px}
+.dl-what b{display:block; margin-bottom:2px; font-size:15px}
+
+/* ---- variant fork ---- */
+.fork{display:grid; gap:20px; margin:24px 0}
+@media(min-width:900px){ .fork{grid-template-columns:1fr 1fr} }
+.var{background:var(--surface); border:1px solid var(--rule); border-radius:4px; padding:20px 22px; box-shadow:var(--shadow)}
+.var.pick{border-color:var(--accent); border-width:1.5px}
+.var h3{margin-top:0; font-size:19px}
+.var .tag{font-family:var(--mono); font-size:10px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:5px}
+.var ul{font-size:14px; padding-left:18px}
+.var .bot{margin-top:14px; padding-top:12px; border-top:1px solid var(--rule); font-size:13.5px; color:var(--ink-2)}
+
+/* ---- day-by-day ---- */
+.days{display:grid; gap:1px; background:var(--rule); border:1px solid var(--rule); border-radius:3px; overflow:hidden}
+.day{background:var(--surface); padding:13px 17px; display:grid; gap:3px 18px; grid-template-columns:1fr}
+@media(min-width:700px){ .day{grid-template-columns:118px 1fr} }
+.day.travel{background:var(--surface-2)}
+.d-date{font-family:var(--mono); font-size:11.5px; font-weight:650; color:var(--ink-2); letter-spacing:.02em; padding-top:2px}
+.d-body b{display:block; font-size:14.5px; margin-bottom:2px}
+.d-body{font-size:13.8px; color:var(--ink-2)}
+.d-body .hi{color:var(--ink)}
+
+details{border:1px solid var(--rule); border-radius:3px; background:var(--surface); padding:0 16px; margin:14px 0}
+summary{cursor:pointer; padding:12px 0; font-weight:600; font-size:14.5px; list-style-position:outside}
+details[open] summary{border-bottom:1px solid var(--rule); margin-bottom:12px}
+details > *:last-child{margin-bottom:14px}
+
+.foot{margin-top:56px; padding-top:22px; border-top:1px solid var(--rule); font-size:13px; color:var(--muted)}
+@media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important} }
+
+/* ---- mobile navigation ----
+   The rail used to be hidden below 1000px on the reasoning that a phone is a
+   scroll anyway. That was wrong: this document is 30+ sections across six
+   groups, and a phone reader with no navigation has to scroll past four cities
+   to reach the entry rules. Sticky, not fixed, so it never overlaps the
+   masthead on load or covers content at the end of the page. */
+.mobnav{display:none}
+@media (max-width:1000px){
+  .rail{display:none}
+  .mobnav{
+    display:block; position:sticky; top:0; z-index:60;
+    margin:0 -24px 24px; background:var(--surface);
+    border-bottom:1px solid var(--rule-2); box-shadow:var(--shadow);
+  }
+  .mobnav-btn{
+    width:100%; display:flex; align-items:center; justify-content:space-between;
+    gap:12px; padding:13px 24px; background:none; border:0; cursor:pointer;
+    font-family:var(--sans); font-size:15px; font-weight:600; color:var(--ink);
+    text-align:left;
+  }
+  .mobnav-caret{color:var(--muted); transition:transform .15s ease}
+  .mobnav.open .mobnav-caret{transform:rotate(180deg)}
+  .mobnav-menu{
+    display:none; max-height:min(65vh,460px); overflow-y:auto;
+    padding:4px 0 10px; border-top:1px solid var(--rule);
+  }
+  .mobnav.open .mobnav-menu{display:block}
+  .mobnav-menu .grp{
+    font-family:var(--mono); font-size:10px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted);
+    padding:12px 24px 4px;
+  }
+  .mobnav-menu a{
+    display:block; padding:8px 24px; color:var(--ink-2);
+    text-decoration:none; font-size:15px;
+  }
+  .mobnav-menu a:focus-visible{outline:2px solid var(--accent); outline-offset:-2px}
+  .mobnav-menu a[aria-current="true"]{color:var(--accent); font-weight:600}
+}
+</style>
+
+<div class="wrap">
+
+<div class="mobnav" id="mobnav">
+  <button class="mobnav-btn" id="mobnav-btn" aria-expanded="false" aria-controls="mobnav-menu"><span id="mobnav-cur">Contents</span><span class="mobnav-caret">&#9662;</span></button>
+  <div class="mobnav-menu" id="mobnav-menu">
+{{MOBNAV}}
+  </div>
+</div>
+
+<header class="mast">
+  <p class="kicker">{{KICKER}}</p>
+  <h1>{{TITLE}}</h1>
+  <p class="sub">{{SUBTITLE}}</p>
+  <dl class="facts">
+{{FACTS}}
+  </dl>
+</header>
+
+<div class="cols">
+<nav class="rail" aria-label="Sections">
+{{RAIL}}
+</nav>
+
+<main>
+
+{{BODY}}
+
+</main>
+</div>
+</div>
+<script>
+(function(){
+  var nav=document.getElementById('mobnav'), btn=document.getElementById('mobnav-btn'),
+      cur=document.getElementById('mobnav-cur'), menu=document.getElementById('mobnav-menu');
+  if(!nav) return;
+  btn.addEventListener('click',function(){
+    var open=nav.classList.toggle('open');
+    btn.setAttribute('aria-expanded',open?'true':'false');
+  });
+  menu.addEventListener('click',function(e){
+    if(e.target.tagName==='A'){nav.classList.remove('open');btn.setAttribute('aria-expanded','false');}
+  });
+  // label the button with the section actually on screen — on a document this
+  // long "which city am I in" is a real question
+  var links={}, secs=[].slice.call(document.querySelectorAll('main section[id]'));
+  [].forEach.call(menu.querySelectorAll('a[href^="#"]'),function(a){
+    links[a.getAttribute('href').slice(1)]=a;
+  });
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(!en.isIntersecting) return;
+        var a=links[en.target.id]; if(!a) return;
+        cur.textContent=a.textContent;
+        for(var k in links) links[k].removeAttribute('aria-current');
+        a.setAttribute('aria-current','true');
+      });
+    },{rootMargin:'-10% 0px -80% 0px'});
+    secs.forEach(function(x){io.observe(x);});
+  }
+})();
+</script>

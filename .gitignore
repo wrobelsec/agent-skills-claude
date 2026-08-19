@@ -1,0 +1,7 @@
+# Personal data — never leaves this machine
+travel-agent/traveler-profile.md
+
+# Python build artifacts. `lib/` is an importable package, so running any script
+# generates these; they are not part of the skill and must not ship.
+__pycache__/
+*.py[cod]
