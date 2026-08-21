@@ -5,3 +5,4 @@ travel-agent/traveler-profile.md
 # generates these; they are not part of the skill and must not ship.
 __pycache__/
 *.py[cod]
+serpapi-cache/

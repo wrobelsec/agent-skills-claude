@@ -92,10 +92,29 @@ class TestKeyedProviders(unittest.TestCase):
     def test_serpapi_key_if_present(self):
         k = key("SERPAPI_API_KEY")
         if not k:
-            self.skipTest("SERPAPI_API_KEY not configured — "
-                          "multi-city and open-jaw fares will be UNVERIFIED")
+            self.skipTest("SERPAPI_API_KEY not configured — live fares and "
+                          "lodging rates will be UNVERIFIED")
         d = get("https://serpapi.com/account?api_key=" + urllib.parse.quote(k))
         self.assertNotIn("error", {k_.lower() for k_ in d})
+
+    def test_serpapi_has_searches_left_to_spend(self):
+        """Reading the meter costs nothing; running out mid-sweep costs a report.
+
+        This deliberately does NOT perform a search. A test suite that consumes
+        metered quota to prove quota exists is the same mistake as a smoke test
+        that burns the thing it is checking -- and on a small plan, running the
+        suite a few times would exhaust the month before any research began.
+        """
+        from lib import serpapi
+        if not key("SERPAPI_API_KEY"):
+            self.skipTest("SERPAPI_API_KEY not configured")
+        b = serpapi.budget()
+        self.assertIsNotNone(b, "account endpoint unreadable — treat as exhausted")
+        self.assertGreater(
+            b["left"], 0,
+            f"SerpApi quota is exhausted ({b['used']} used on {b['plan']}). "
+            f"Every rate and fare this run would silently come back empty — "
+            f"wait for the monthly reset or raise the plan before dispatching.")
 
 
 class TestDestinationProbe(unittest.TestCase):

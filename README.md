@@ -29,12 +29,20 @@ skills/
         │   ├── money.py               Currency symbols, dated FX, both-currencies rule
         │   ├── humanize.py            Machine values → reader-facing text
         │   ├── render.py              Standard tables, map links, link injector
-        │   └── report.py              Report builder — owns headings, rail, mobile menu
+        │   ├── report.py              Report builder — owns headings, rail, mobile menu
+        │   ├── quota.py               Ceilings, counters, rate limits — one gate
+        │   ├── serpapi.py             Live fares and rates, cached
+        │   ├── gplaces.py             Google Places: venues, hours, Maps links
+        │   ├── openmeteo.py           Climate + daylight, with the horizon trap
+        │   └── fxrates.py             Dated FX, provider chain with fallback
         ├── tests/                     Unit tests offline, API checks live
         │   ├── test_money.py          Currency formatting
         │   ├── test_humanize.py       No machine value reaches a reader
         │   ├── test_render.py         Tables, map links, link injection
         │   ├── test_report.py         Heading ownership, structure, navigation
+        │   ├── test_quota.py          Ceilings, counters, refusing to overspend
+        │   ├── test_serpapi.py        Caching, rate arithmetic, error surfacing
+        │   ├── test_clients.py        Shared clients + no-bypass architecture guard
         │   └── test_live_apis.py      Endpoint reachability + destination probe
         └── scripts/                   Run. Destination passed at runtime
             ├── run_tests.py           ← run this FIRST, every run
@@ -44,8 +52,14 @@ skills/
             ├── climate.py             Conditions over the real window + grid-snap check
             ├── daylight.py            Sunrise/sunset per base
             ├── fx.py                  Dated FX with provider fallback
-            └── places.py              Venue status, hours, spend, access, Maps link
+            ├── places.py              Venue status, hours, spend, access, Maps link
+            ├── hotels.py              Live rates for real dates and party size
+            └── flights.py             Live fares for real routes and dates
 ```
+
+**Every provider has exactly one client in `lib/`, and nothing calls a provider any other way.** Two scripts once hit the same host independently, each with its own endpoint and its own backoff — so a fix landed in one and not the other, and nothing could say how much traffic the skill actually sent. Clients are where the quota check, the spend counter, the rate limit and the cache live. A test fails the build if a script reintroduces a raw URL or imports `get`/`post` directly.
+
+**Every provider call is metered, and the meter is checked before the run, not after.** `run_tests.py` prints what each key has left before a single test runs; `lib/quota.py` refuses a batch that would run out half-way, because a sweep that dies mid-way leaves unverified rows looking exactly like ones that genuinely failed. Ceilings are set per provider with `<PROVIDER>_MONTHLY_LIMIT` — never hardcoded, since plans differ per user.
 
 **Start every run with the test suite.** Offline it takes about a second; with `--live` it confirms every endpoint is reachable *today*; with a destination it confirms a keyed provider gives the right answer *there*.
 
