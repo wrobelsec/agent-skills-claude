@@ -21,9 +21,8 @@ Nothing here is destination-specific.
 import argparse, os, sys, time, datetime as dt, pathlib
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
-from lib.common import get, save, load_places
-
-ARCHIVE = "https://archive-api.open-meteo.com/v1/archive"
+from lib.common import save, load_places
+from lib import openmeteo
 
 
 def main():
@@ -56,9 +55,8 @@ def main():
     for name, (lat, lon, _) in places.items():
         # query a contiguous span in the proxy year covering every wanted date
         keys = sorted({d.replace(year=proxy_year) for d in want})
-        d = get(f"{ARCHIVE}?latitude={lat}&longitude={lon}"
-                f"&start_date={keys[0]}&end_date={keys[-1]}"
-                f"&daily=sunrise,sunset&timezone=auto")["daily"]
+        d = openmeteo.archive(lat, lon, keys[0], keys[-1],
+                              daily=["sunrise", "sunset"])["daily"]
         got = {t[:10]: (d["sunrise"][i][-5:], d["sunset"][i][-5:])
                for i, t in enumerate(d["time"])}
         out[name] = {}

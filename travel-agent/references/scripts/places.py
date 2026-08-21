@@ -35,12 +35,12 @@ missing key is a quality reduction, never an error. The key is never printed.
 import argparse, sys, pathlib, time
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
-from lib.common import key, post, save
+from lib.common import save
+from lib import gplaces, quota, venues
 from lib.money import sym as _sym
 from lib import humanize as H
 from lib.render import maps_url
 
-API = "https://places.googleapis.com/v1/places:searchText"
 
 # This API answers far more than "does it exist". Every field below has been
 # confirmed to return live, and several replace research that was previously
@@ -54,14 +54,7 @@ API = "https://places.googleapis.com/v1/places:searchText"
 #                        hand-constructed search URL
 #   editorialSummary     Google's one-line description
 #   reviews              up to 5 full review texts
-FIELDS = ",".join("places." + f for f in [
-    "id", "displayName", "formattedAddress", "businessStatus",
-    "regularOpeningHours.weekdayDescriptions", "rating", "userRatingCount",
-    "primaryTypeDisplayName", "location", "websiteUri", "googleMapsUri",
-    "priceLevel", "priceRange", "editorialSummary", "paymentOptions",
-    "accessibilityOptions", "reservable", "goodForGroups",
-    "servesVegetarianFood", "takeout", "dineIn", "reviews",
-])
+FIELDS = gplaces.FIELDS
 
 # priceLevel is ORDINAL AND LOCALE-RELATIVE. It does not convert to money, and
 # Google documents no mapping to currency. Measured over one run's verified
@@ -142,29 +135,54 @@ def main():
     ap.add_argument("--lang", default="en")
     ap.add_argument("--expect", help="region/city every result must resolve inside; "
                                      "mismatches are reported and counted")
+    ap.add_argument("--fallback", action="store_true",
+                    help="on a Places miss, try SerpApi Maps. Rescued rows are "
+                         "marked PARTIAL — no status, hours, access or payment — "
+                         "and spend the SerpApi monthly budget, so this is off "
+                         "by default")
     a = ap.parse_args()
 
-    k = key("GOOGLE_PLACES_API_KEY")
-    if not k:
+    if not gplaces.available():
         print("GOOGLE_PLACES_API_KEY not set — cannot verify.")
         print("Mark every venue row UNVERIFIED and say so in the deliverable.")
         return 0
 
     queries = [l.strip() for l in open(a.file, encoding="utf-8")
                if l.strip() and not l.startswith("#")]
+
+    # Check the whole batch against the ceiling BEFORE spending any of it.
+    # Stopping half-way through a sweep is worse than not starting: the
+    # unverified half is indistinguishable from venues that genuinely failed
+    # to resolve, and that difference decides whether a row ships.
+    q_state = gplaces.reserve(len(queries))
+    print(quota.line("GOOGLE_PLACES", q_state))
+
     out, misfiled = [], []
     for q in queries:
         try:
-            j = post(API, {"textQuery": q, "languageCode": a.lang,
-                           "maxResultCount": 1},
-                     headers={"X-Goog-Api-Key": k, "X-Goog-FieldMask": FIELDS})
-            p = (j.get("places") or [None])[0]
+            p = gplaces.search_text(q, lang=a.lang)
         except Exception as e:
             out.append({"query": q, "status": f"LOOKUP_FAILED {type(e).__name__}"})
             print(f"{q[:38]:<40} LOOKUP_FAILED")
             continue
 
         if not p:
+            # Second opinion before condemning a row. A name that will not
+            # resolve is usually fabricated or dead -- but "usually" is not
+            # "always", and one provider's blind spot should not retire a real
+            # venue. The fallback cannot supply status or hours, so anything it
+            # rescues is marked PARTIAL and never reads as fully verified.
+            alt = venues.resolve(q, lang=a.lang, allow_fallback=a.fallback)                 if a.fallback else None
+            if alt:
+                out.append({"query": q, "name": alt["name"],
+                            "status": "PARTIAL — resolved via fallback",
+                            "source": alt["source"], "missing": alt["missing"],
+                            "address": alt["address"], "rating": alt["rating"],
+                            "reviews": alt["reviews"], "coords": alt["coords"],
+                            "maps_url": alt["maps_url"], "website": alt["website"]})
+                print(f"{q[:38]:<40} {alt['name'][:30]:<31} "
+                      f"*** PARTIAL via fallback — no status/hours ***")
+                continue
             out.append({"query": q, "status": "NO_MATCH"})
             print(f"{q[:38]:<40} *** NO MATCH — treat as fabricated until proven ***")
             continue

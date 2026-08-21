@@ -25,9 +25,8 @@ Nothing here is destination-specific; all of it comes from the arguments.
 import argparse, os, statistics as st, sys, datetime as dt, pathlib
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
-from lib.common import get, save, load_places
-
-ARCHIVE = "https://archive-api.open-meteo.com/v1/archive"
+from lib.common import save, load_places
+from lib import openmeteo
 
 
 def md(s):
@@ -73,10 +72,9 @@ def main():
 
     rows, snap = [], []
     for name, (lat, lon, elev) in places.items():
-        d = get(f"{ARCHIVE}?latitude={lat}&longitude={lon}"
-                f"&start_date={fetch_start}&end_date={fetch_end}"
-                f"&daily=temperature_2m_max,temperature_2m_min,precipitation_sum"
-                f"&timezone=auto")
+        d = openmeteo.archive(lat, lon, fetch_start, fetch_end,
+                              daily=["temperature_2m_max", "temperature_2m_min",
+                                     "precipitation_sum"])
         grid_elev = d.get("elevation")
         snap.append({
             "place": name, "asked": [lat, lon],

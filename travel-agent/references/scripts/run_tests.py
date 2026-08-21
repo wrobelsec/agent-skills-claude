@@ -42,8 +42,33 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 UNIT = ["tests.test_money", "tests.test_humanize", "tests.test_render",
-        "tests.test_report"]
+        "tests.test_report", "tests.test_quota", "tests.test_serpapi",
+        "tests.test_clients"]
 LIVE = ["tests.test_live_apis"]
+
+# Every keyed provider, and whether its remaining quota can be read from the
+# provider or only counted locally. Printed before any test runs, because a run
+# that starts with an exhausted key produces blanks that look like findings.
+PROVIDERS = ["SERPAPI", "GOOGLE_PLACES", "GEOAPIFY", "SHERPA",
+             "OPENMETEO", "FX", "NOMINATIM"]
+
+
+def quota_report():
+    """What every key has left, before a single search is spent."""
+    from lib import quota, serpapi
+    print("=" * 62)
+    print("QUOTA — checked before the run, never after")
+    print("=" * 62)
+    for prov in PROVIDERS:
+        ask = serpapi.budget if prov == "SERPAPI" else None
+        try:
+            print(quota.line(prov, quota.remaining(prov, ask=ask)))
+        except Exception as e:
+            print(f"  {prov:<16} could not be read: {type(e).__name__}")
+    print("  Ceilings come from <PROVIDER>_MONTHLY_LIMIT. A provider with no ceiling")
+    print("  and no published meter is uncapped — set one to be warned before a")
+    print("  sweep spends more than you meant.")
+    print()
 
 
 def main():
@@ -55,8 +80,14 @@ def main():
     ap.add_argument("--romanized", help="the same address romanized, if applicable")
     ap.add_argument("--bbox", nargs=4, type=float, metavar=("S", "W", "N", "E"),
                     help="bounds every geocoded answer must fall inside")
+    ap.add_argument("--no-quota", action="store_true",
+                    help="skip the quota report (it makes one free, unmetered "
+                         "call per metered provider)")
     ap.add_argument("-v", "--verbose", action="count", default=1)
     a = ap.parse_args()
+
+    if not a.no_quota:
+        quota_report()
 
     mods = list(UNIT)
     if a.live or a.address:
